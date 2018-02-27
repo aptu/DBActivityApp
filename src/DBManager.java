@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.ArrayList;
 
 /**
- * Created by pandabaka on 2/13/18.
+ *
  */
 public class DBManager {
     private Connection connect = null;
@@ -27,7 +27,7 @@ public class DBManager {
     }
 
 
-    public void saveActivty(Activity activity) throws SQLException {
+    public void saveActivity(Activity activity) throws SQLException {
         PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.Activity (Type) values (?)");
         statement.setString(1, activity.getType());
         statement.execute();
@@ -36,6 +36,24 @@ public class DBManager {
     public Activity findActivity(int id) throws SQLException {
         Activity activity = null;
         return activity;
+    }
+
+    // Methods to get statistics
+
+    public double getMySpeed(){
+        double myspeed = 0.0;
+        return myspeed;
+    }
+
+    public double getTotalSpeed() {
+        double speed = 0.0;
+        return speed;
+    }
+
+    public double getAvgSpeed() {
+        double speed = 0.0;
+        return speed;
+
     }
 
 
@@ -140,18 +158,23 @@ public class DBManager {
             DBManager dbm = new DBManager();
 
             // DONE: Load Avtivity Table data
-            //dbm.saveActivty(new Activity(101, "Biking"));
-            //dbm.saveActivty(new Activity(102, "Running"));
-            //dbm.saveActivty(new Activity(103, "Hiking"));
-            //dbm.saveActivty(new Activity(104, "Snowboarding"));
-            //dbm.saveActivty(new Activity(105, "Skiing"));
-            //dbm.saveActivty(new Activity(106, "Fishing"));
-            //dbm.saveActivty(new Activity(107, "MountBiking"));
-            //dbm.saveActivty(new Activity(108, "Sky Diving"));
-            //dbm.saveActivty(new Activity(109, "Climbing"));
-            //dbm.saveActivty(new Activity("Rafting"));
+            //dbm.saveActivity(new Activity(101, "Biking"));
+            //dbm.saveActivity(new Activity(102, "Running"));
+            //dbm.saveActivity(new Activity(103, "Hiking"));
+            //dbm.saveActivity(new Activity(104, "Snowboarding"));
+            //dbm.saveActivity(new Activity(105, "Skiing"));
+            //dbm.saveActivity(new Activity(106, "Fishing"));
+            //dbm.saveActivity(new Activity(107, "MountBiking"));
+            //dbm.saveActivity(new Activity(108, "Sky Diving"));
+            //dbm.saveActivity(new Activity(109, "Climbing"));
+            //dbm.saveActivity(new Activity("Rafting"));
 
             // Load
+
+
+
+
+
         }
 
     }

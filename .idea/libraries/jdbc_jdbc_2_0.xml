@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jdbc:jdbc:2.0" type="repository">
+    <properties maven-id="jdbc:jdbc:2.0" />
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jdbc-stdext-2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
