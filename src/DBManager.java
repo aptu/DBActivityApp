@@ -1,42 +1,174 @@
 //import com.mysql.cj.jdbc.Driver;
-import java.io.File;
+import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
- *
+ * DBManager connects to ActivityApp database.
+ * Holds current session information: userId, activityId
+ * and lists of events and activities.
  */
 public class DBManager {
     private Connection connect = null;
+    int currUserId = -1;
+    int currActivityId = -1;
+    Map<Integer, Activity> listOfActivities = new HashMap<>();
+    Map<Integer, Event> listOfEvents = new HashMap<>();
+    List<String> userInterests = new LinkedList<>();
 
 
     public DBManager() throws SQLException {
-
-        // This will load the MySQL driver, each DB has its own driver
-        //Class.forName("com.mysql.cj.jdbc.Driver");
-        // Setup the connection with the DB
-        connect = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com", "CSS475_2018", "Databases_2018");
-
-
+       // Establish a connection to the database
+        connect = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com",
+                "CSS475_2018", "Databases_2018");
     }
 
+    // 1 When login button is pressed, we check if user exists and setup the userID
+    public int login(String firstName, String lastName) throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.User" +
+                " where FirstName = ? and LastName = ?");
+        statement.setString(1, firstName);
+        statement.setString(2, lastName);
+        ResultSet result= statement.executeQuery();
+        String activity = "None";
+        int id = -1;
+        while (result.next()) {
+            id = result.getInt("UserID");
+            System.out.println(id);
+        }
+        // Authentication of user
+        if (id > 0) {
+            this.currUserId = id;
+        }
+        else {
+            System.out.println("User is not registered");
+        }
+        return id;
+    }
 
+    // Insert new activity into the table Activity
     public void saveActivity(Activity activity) throws SQLException {
         PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.Activity (Type) values (?)");
         statement.setString(1, activity.getType());
         statement.execute();
     }
 
-    public Activity findActivity(int id) throws SQLException {
-        Activity activity = null;
+    // Insert new activity into the table ActivityHistory
+    public void saveActivitytoHistory(ActivityHistory activity) throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.ActivityHistory" +
+                " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, PercentCompleted, Location) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        statement.setInt(1, activity.getLoggedId());
+        statement.setInt(2, activity.getUserId());
+        statement.setInt(3, activity.getActivityId());
+        statement.setTimestamp(4, java.sql.Timestamp.valueOf(activity.getDateTime()));
+        statement.setInt(5, activity.getCalBurned());
+        statement.setInt(6, activity.getDuration());
+        statement.setInt(7, activity.getDistance());
+        statement.setInt(8, activity.getPercentCompleted());
+        statement.setString(9, activity.getLocation());
+        statement.execute();
+    }
+
+    // Query the list of all activities and save in current session
+    //TODO: should I return the list??
+    public void getListOfActivities() throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Activity");
+        ResultSet result = statement.executeQuery();
+        int id;
+        String name;
+        while (result.next()){
+            id = result.getInt("ActivityID");
+            name = result.getString("Type");
+            Activity activity = new Activity(id, name);
+            this.listOfActivities.put(id, activity);
+        }
+        // check if it worked
+        for (int e : listOfActivities.keySet()){
+            System.out.println(e + "\t " + listOfActivities.get(e).toString());
+        }
+    }
+
+
+     // Query the list of all activities and save in current session
+    //TODO: should I return the list??
+    public void getListOfEvents() throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Event");
+        ResultSet result = statement.executeQuery();
+        int id, aid;
+        java.sql.Timestamp date; //TODO: format date????
+        String name;
+        while (result.next()){
+            id = result.getInt("EventID");
+            aid = result.getInt("ActivityID");
+            date = result.getTimestamp("DateTime");
+            System.out.println(date);
+            name = result.getString("EventName");
+
+            Event event = new Event(id, aid, date, name);
+            this.listOfEvents.put(id, event);
+        }
+        // check if it worked
+        for (int e : listOfEvents.keySet()){
+            System.out.println(e + "\t " + listOfEvents.get(e).toString());
+        }
+    }
+    // Select activity by ID
+    // Returns the name of activity
+    public String findActivity(int id) throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Activity where ActivityId = ?");
+        statement.setInt(1, id);
+        ResultSet result= statement.executeQuery();
+        String activity = "None";
+        while(result.next()) {
+            activity = result.getString("Type");
+            System.out.println(activity);
+        }
+        if (activity.equals("None")){
+            System.out.println("Activity ID does not exist");
+        }
         return activity;
     }
+
+
+    // Set currActivity & update it
+    public boolean recordActivity(int id)  {
+        try {
+            saveActivity(new Activity(listOfActivities.get(id).getType()));
+            currActivityId = id;
+            return true;
+        } catch (SQLException e) {
+            System.out.println("[Record Activity]: " + e);
+            return false;
+        }
+    }
+
+    // Displays all interests (activities)
+    public void  getUserInterests() throws SQLException{
+        // the user can select any activity from the list and save it in his profile (del prev and add userInterests table)
+        PreparedStatement statement = connect.prepareStatement("select Type from ActivityApp.UserInterests i, " +
+                "ActivityApp.Activity a where i.ActivityID = a.ActivityID and i.UserID = ?");
+        statement.setInt(1, this.currUserId); //TODO: do we need another UserID? I think not
+        ResultSet result = statement.executeQuery();
+        String activity;
+        while (result.next()){
+            activity = result.getString("Type");
+            this.userInterests.add(activity);
+        }
+        // check if it worked
+        for (String a : userInterests){
+            System.out.println(a);
+        }
+    }
+
+    // display my events
+    // create event
+    //
 
     // Methods to get statistics
 
@@ -57,6 +189,12 @@ public class DBManager {
     }
 
 
+
+
+
+
+
+
     public void readDataBase() throws Exception {
         try {
             // This will load the MySQL driver, each DB has its own driver
@@ -65,38 +203,8 @@ public class DBManager {
             connect = DriverManager
                     .getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com", "CSS475_2018", "Databases_2018");
 
-
-
-        /*    // PreparedStatements can use variables and are more efficient
-            preparedStatement = connect
-                    .prepareStatement("insert into  feedback.comments values (default, ?, ?, ?, ? , ?, ?)");
-            // "myuser, webpage, datum, summary, COMMENTS from feedback.comments");
-            // Parameters start with 1
-            preparedStatement.setString(1, "Test");
-            preparedStatement.setString(2, "TestEmail");
-            preparedStatement.setString(3, "TestWebpage");
-            preparedStatement.setDate(4, new java.sql.Date(2009, 12, 11));
-            preparedStatement.setString(5, "TestSummary");
-            preparedStatement.setString(6, "TestComment");
-            preparedStatement.executeUpdate();
-
-            preparedStatement = connect
-                    .prepareStatement("SELECT myuser, webpage, datum, summary, COMMENTS from feedback.comments");
-            resultSet = preparedStatement.executeQuery();
-            writeResultSet(resultSet);
-
-            // Remove again the insert comment
-            preparedStatement = connect
-                    .prepareStatement("delete from feedback.comments where myuser= ? ; ");
-            preparedStatement.setString(1, "Test");
-            preparedStatement.executeUpdate();
-
-            resultSet = statement
-                    .executeQuery("select * from feedback.comments");
-            writeMetaData(resultSet);
-*/
         } catch (Exception e) {
-            System.out.println("Caught exception: "  + e);
+            System.out.println("[Error connecting]: "  + e);
         }
     }
 /*
@@ -112,25 +220,6 @@ public class DBManager {
         }
     }
 
-    private void writeResultSet(ResultSet resultSet) throws SQLException {
-        // ResultSet is initially before the first data set
-        while (resultSet.next()) {
-            // It is possible to get the columns via name
-            // also possible to get the columns via the column number
-            // which starts at 1
-            // e.g. resultSet.getSTring(2);
-            String user = resultSet.getString("myuser");
-            String website = resultSet.getString("webpage");
-            String summary = resultSet.getString("summary");
-            Date date = resultSet.getDate("datum");
-            String comment = resultSet.getString("comments");
-            System.out.println("User: " + user);
-            System.out.println("Website: " + website);
-            System.out.println("summary: " + summary);
-            System.out.println("Date: " + date);
-            System.out.println("Comment: " + comment);
-        }
-    }
 
     // You need to close the resultSet
     private void close() {
@@ -157,7 +246,7 @@ public class DBManager {
     public static void main (String[]args) throws Exception {
             DBManager dbm = new DBManager();
 
-            // DONE: Load Avtivity Table data
+            // DONE: Load Activity Table data
             //dbm.saveActivity(new Activity(101, "Biking"));
             //dbm.saveActivity(new Activity(102, "Running"));
             //dbm.saveActivity(new Activity(103, "Hiking"));
@@ -169,8 +258,27 @@ public class DBManager {
             //dbm.saveActivity(new Activity(109, "Climbing"));
             //dbm.saveActivity(new Activity("Rafting"));
 
-            // Load
+            // Test findActivity method:
+            dbm.findActivity(101);
+            dbm.findActivity(109);
+            dbm.findActivity(10);
 
+            // Test login method
+            dbm.login("John", "Smith");
+            dbm.login("Asia", "Tsai");
+
+            // Test getListof Activities and getListOfEvents
+            dbm.getListOfActivities();
+            dbm.getListOfEvents();
+
+            // Save activity to history
+
+            /*dbm.saveActivitytoHistory(new ActivityHistory(1030, 2, 101,
+                    LocalDateTime.now(),200, 50, 5, 100, "Greenlake" ));
+                    */
+
+            // See user Interests
+            dbm.getUserInterests();
 
 
 

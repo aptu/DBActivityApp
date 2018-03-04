@@ -10,15 +10,16 @@ public class Event {
     private java.sql.Timestamp dateTime; // not sure
     private String eventName;
 
-
+    // Constructor that makes use of auto-increment property
     public Event(int activityId, java.sql.Timestamp dateTime, String eventName){
         this.activityId = activityId;
         this.dateTime = dateTime;
         this.eventName = eventName;
     }
 
-    // Constructor that makes use of auto-increment property
-    public Event(java.sql.Timestamp dateTime, String eventName){
+
+    public Event(int eventId, int activityId, java.sql.Timestamp dateTime, String eventName){
+        this.eventId = eventId;
         this.activityId = activityId;
         this.dateTime = dateTime;
         this.eventName = eventName;
@@ -58,9 +59,13 @@ public class Event {
     }
 
 
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventId=" + eventId +
+                ", activityId=" + activityId +
+                ", dateTime=" + dateTime +
+                ", eventName='" + eventName + '\'' +
+                '}';
+    }
 }

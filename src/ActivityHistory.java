@@ -1,4 +1,4 @@
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -7,9 +7,13 @@ public class ActivityHistory {
     private int loggedId;
     private int userId;
     private int activityId;
-    private java.sql.Timestamp dateTime;
+    private LocalDateTime dateTime;
     private int calBurned;
     private int duration;
+    private int distance;
+    private int percentCompleted;
+    private String location;
+
 
     public int getDistance() {
         return distance;
@@ -19,13 +23,10 @@ public class ActivityHistory {
         this.distance = distance;
     }
 
-    private int distance;
-    private int percentCompleted;
-    private String location;
 
     // Constructor which uses the Auto-increment property of loggedId
-    public ActivityHistory( int userId, int activityId, java.sql.Timestamp dateTime,
-                           int calBurned, int duration, int percentCompleted, String location) {
+    public ActivityHistory( int userId, int activityId, LocalDateTime dateTime,
+                           int calBurned, int duration,int distance, int percentCompleted, String location) {
         this.userId = userId;
         this.activityId = activityId;
         this.dateTime = dateTime;
@@ -36,10 +37,10 @@ public class ActivityHistory {
 
     }
 
-    public ActivityHistory(int loggedId, int userId, int activityId, java.sql.Timestamp dateTime,
-                           int calBurned, int duration, int percentCompleted, String location) {
+    public ActivityHistory(int loggedId, int userId, int activityId, LocalDateTime dateTime,
+                           int calBurned, int duration, int distance, int percentCompleted, String location) {
 
-        this(userId, activityId, dateTime, calBurned, duration, percentCompleted, location);
+        this(userId, activityId, dateTime, calBurned, duration, distance, percentCompleted, location);
         this.loggedId = loggedId;
     }
 
@@ -53,7 +54,7 @@ public class ActivityHistory {
     }
 
 
-    public Timestamp getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
@@ -71,5 +72,25 @@ public class ActivityHistory {
 
     public String getLocation() {
         return location;
+    }
+
+    public int getLoggedId() {
+        return loggedId;
+    }
+
+    public void setLoggedId(int loggedId) {
+        this.loggedId = loggedId;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setPercentCompleted(int percentCompleted) {
+        this.percentCompleted = percentCompleted;
     }
 }
