@@ -26,7 +26,7 @@ public class DBManager {
     public DBManager() throws SQLException {
        // Establish a connection to the database
         connect = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com",
-                "CSS475_2018", "Databases_2018");
+                "CSS475_2018", "XXXX");
     }
 
     // 1 When login button is pressed, we check if user exists and setup the userID
