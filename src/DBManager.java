@@ -62,16 +62,16 @@ public class DBManager {
     // Insert new activity into the table ActivityHistory
     public void saveActivitytoHistory(ActivityHistory activity) throws SQLException {
         PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.ActivityHistory" +
-                " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, PercentCompleted, Location) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, Latitude, Longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setInt(1, activity.getLoggedId());
         statement.setInt(2, activity.getUserId());
         statement.setInt(3, activity.getActivityId());
         statement.setTimestamp(4, java.sql.Timestamp.valueOf(activity.getDateTime()));
         statement.setInt(5, activity.getCalBurned());
         statement.setInt(6, activity.getDuration());
-        statement.setInt(7, activity.getDistance());
-        statement.setInt(8, activity.getPercentCompleted());
-        statement.setString(9, activity.getLocation());
+        statement.setDouble(7, activity.getDistance());
+        statement.setDouble(8, activity.getLatitude());
+        statement.setDouble(9, activity.getLongitude());
         statement.execute();
     }
 
@@ -101,16 +101,18 @@ public class DBManager {
         PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Event");
         ResultSet result = statement.executeQuery();
         int id, aid;
-        java.sql.Timestamp date; //TODO: format date????
+        java.sql.Timestamp startTime, endTime; //TODO: format date????
         String name;
+        double latitude, longitude;
         while (result.next()){
             id = result.getInt("EventID");
             aid = result.getInt("ActivityID");
-            date = result.getTimestamp("DateTime");
-            System.out.println(date);
+            startTime = result.getTimestamp("StartTime");
+            endTime = result.getTimestamp("EndTime");
             name = result.getString("EventName");
-
-            Event event = new Event(id, aid, date, name);
+            latitude = result.getDouble("Latitude");
+            longitude = result.getDouble("LOngitude");
+            Event event = new Event(id,aid, startTime.toLocalDateTime(),endTime.toLocalDateTime(), name, latitude, longitude);
             this.listOfEvents.put(id, event);
         }
         // check if it worked
@@ -148,7 +150,7 @@ public class DBManager {
         }
     }
 
-    // Displays all interests (activities)
+    // Displays all interests (activities) or display my events
     public void  getUserInterests() throws SQLException{
         // the user can select any activity from the list and save it in his profile (del prev and add userInterests table)
         PreparedStatement statement = connect.prepareStatement("select Type from ActivityApp.UserInterests i, " +
@@ -166,8 +168,18 @@ public class DBManager {
         }
     }
 
-    // display my events
-    // create event
+    // Insert new event into the table Event
+    public void saveEvent(Event event) throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.Event" +
+                " (ActivityID, StartTime, EndTime, EventName, Latitude, Longitude) values (?, ?, ?, ?, ?, ?)");
+        statement.setTimestamp(2, java.sql.Timestamp.valueOf(event.getStartTime()));
+        statement.setTimestamp(3, java.sql.Timestamp.valueOf(event.getEndTime()));
+        statement.setString(4, event.getEventName());
+        statement.setInt(1, event.getActivityId());
+        statement.setDouble(5, event.getLatitude());
+        statement.setDouble(6, event.getLongitude());
+        statement.execute();
+    }
     //
 
     // Methods to get statistics
@@ -272,13 +284,22 @@ public class DBManager {
             dbm.getListOfEvents();
 
             // Save activity to history
+            /*dbm.saveActivitytoHistory(new ActivityHistory(1039, 2, 101,
+                    LocalDateTime.now(),200, 50, 5,17364, 4949 ));
 
-            /*dbm.saveActivitytoHistory(new ActivityHistory(1030, 2, 101,
-                    LocalDateTime.now(),200, 50, 5, 100, "Greenlake" ));
-                    */
+            dbm.saveActivitytoHistory(new ActivityHistory(1021, 2, 103,
+                LocalDateTime.now(),1000, 500, 15, 10210, 674937 ));
 
-            // See user Interests
+            dbm.saveActivitytoHistory(new ActivityHistory(1032, 3, 105,
+                LocalDateTime.now(),200, 100, 5, 10520, 46382 )); */
+
+
+
+        // See user Interests
             dbm.getUserInterests();
+
+            // create new Event
+            //dbm.saveEvent(new Event(LocalDateTime.now(), "Rattlesnake Ledge", 103 ));
 
 
 

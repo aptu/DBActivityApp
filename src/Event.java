@@ -2,27 +2,31 @@
  *
  */
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Event {
     private int eventId;
     private  int activityId;
-    private java.sql.Timestamp dateTime; // not sure
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String eventName;
+    private double latitude;
+    private double longitude;
 
     // Constructor that makes use of auto-increment property
-    public Event(int activityId, java.sql.Timestamp dateTime, String eventName){
+    public Event(int activityId, LocalDateTime startTime, LocalDateTime endTime, String eventName, double latitude, double longitude){
         this.activityId = activityId;
-        this.dateTime = dateTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.eventName = eventName;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 
-    public Event(int eventId, int activityId, java.sql.Timestamp dateTime, String eventName){
+    public Event(int eventId, int activityId, LocalDateTime startTime, LocalDateTime endTime, String eventName, double latitude, double longitude){
+        this( activityId, startTime, endTime, eventName, latitude, longitude);
         this.eventId = eventId;
-        this.activityId = activityId;
-        this.dateTime = dateTime;
-        this.eventName = eventName;
     }
 
 
@@ -42,13 +46,6 @@ public class Event {
         this.activityId = activityId;
     }
 
-    public Timestamp getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(Timestamp dateTime) {
-        this.dateTime = dateTime;
-    }
 
     public String getEventName() {
         return eventName;
@@ -64,8 +61,43 @@ public class Event {
         return "Event{" +
                 "eventId=" + eventId +
                 ", activityId=" + activityId +
-                ", dateTime=" + dateTime +
-                ", eventName='" + eventName + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", eventName='" + eventName +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude + '\'' +
                 '}';
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 }
