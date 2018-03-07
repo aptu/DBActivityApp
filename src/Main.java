@@ -1,7 +1,10 @@
+import db.DBManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import scene.SceneHolder;
 import scene.SceneLoader;
+
+import java.sql.SQLException;
 
 public class Main extends Application {
 
@@ -20,7 +23,11 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+
+            DBManager.db = new DBManager();
+
+
         launch(args);
     }
 }

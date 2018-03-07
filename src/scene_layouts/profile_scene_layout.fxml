@@ -61,8 +61,8 @@
          <children>
             <CheckBox fx:id="hikingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Hiking" GridPane.columnIndex="1" />
             <CheckBox fx:id="bikingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Biking" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <CheckBox fx:id="wallkingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Walking" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <CheckBox fx:id="SnowboardingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="128.0" text="Snowboarding" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <CheckBox fx:id="walkingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Walking" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <CheckBox fx:id="snowboardingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="128.0" text="Snowboarding" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <CheckBox fx:id="fishingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Fishing" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <CheckBox fx:id="runningBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Running" GridPane.columnIndex="3" />
             <CheckBox fx:id="swimmingBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="100.0" text="Swimming" GridPane.columnIndex="3" GridPane.rowIndex="1" />
