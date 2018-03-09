@@ -7,4 +7,8 @@ public class MyEventsController {
     public void goToMenu(ActionEvent actionEvent) {
         SceneHolder.primaryStage.setScene(SceneHolder.eventScene);
     }
+
+    public void cancelEvent(ActionEvent actionEvent) {
+        
+    }
 }
