@@ -27,6 +27,7 @@ public class DBManager {
     private Connection connect = null;
     int currActivityId = -1;
     Map<Integer, Activity> listOfActivities = new HashMap<>();
+    Map<String, Integer> activityIDMap = new HashMap<String, Integer>();
     Map<Integer, Event> listOfEvents = new HashMap<>();
     List<String> userInterests = new ArrayList<String>();
     List<String> allInterests = new ArrayList<String>();
@@ -40,18 +41,42 @@ public class DBManager {
         // Establish a connection to the database
         connect = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com",
                 "CSS475_2018", password);
-        getListofAllActivities();
+        if(allInterests.size() == 0) {
+            PreparedStatement statement = connect.prepareStatement("select ActivityID, Type from ActivityApp.Activity");
+            String name;
+            int id;
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                name = result.getString("Type");
+                id = result.getInt("ActivityID");
+                allInterests.add(name);
+                activityIDMap.put(name, id);
+            }
+        }
     }
 
-    public void getListofAllActivities() throws  SQLException {
-        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Activity");
+    public void logout()throws SQLException{
+        connect.close();
+        currUserId = -1;
+        userInterests.clear();
+    }
+
+    public List<String> getAllActivities(){
+        return allInterests;
+    }
+
+    public List<String> getListofAllActivities() throws  SQLException {
+
+        List<String> activities = new ArrayList<String>();
+        PreparedStatement statement = connect.prepareStatement("select LocName from ActivityApp.LocatableActivity");
         String name;
         ResultSet result= statement.executeQuery();
         while (result.next()) {
-            name = result.getString("Type");
-            this.allInterests.add(name);
+            name = result.getString("LocName");
+            activities.add(name);
         }
-        System.out.println(this.allInterests); // not sure
+
+        return activities;
     }
 
     // 1 When login button is pressed, we check if user exists and setup the userID
@@ -174,21 +199,23 @@ public class DBManager {
             System.out.println(e + "\t " + listOfEvents.get(e).toString());
         }
     }
+
     // Select activity by ID
     // Returns the name of activity
-    public String findActivity(int id) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Activity where ActivityId = ?");
-        statement.setInt(1, id);
+    public List<String> findActivity(String activityType) throws SQLException {
+
+        List<String> activities = new ArrayList<String>();
+        PreparedStatement statement = connect.prepareStatement("select LocName from ActivityApp.LocatableActivity where ActivityId = ?");
+
+        statement.setInt(1, activityIDMap.get(activityType));
+        String name;
         ResultSet result= statement.executeQuery();
-        String activity = "None";
-        while(result.next()) {
-            activity = result.getString("Type");
-            System.out.println(activity);
+        while (result.next()) {
+            name = result.getString("LocName");
+            activities.add(name);
         }
-        if (activity.equals("None")){
-            System.out.println("Activity ID does not exist");
-        }
-        return activity;
+
+        return activities;
     }
 
 
@@ -206,6 +233,8 @@ public class DBManager {
     // TODO: select the list of booleans
     // Displays all interests (activities) or display my events
     public boolean[] getUserInterests() throws SQLException{
+        userInterests.clear();
+
         // the user can select any activity from the list and save it in his profile (del prev and add userInterests table)
         PreparedStatement statement = connect.prepareStatement("select Type from ActivityApp.UserInterests i, " +
                 "ActivityApp.Activity a where i.ActivityID = a.ActivityID and i.UserID = ?");
@@ -349,9 +378,9 @@ public class DBManager {
         //dbm.saveActivity(new Activity("Rafting"));
 
         // Test findActivity method:
-        dbm.findActivity(101);
-        dbm.findActivity(109);
-        dbm.findActivity(10);
+        //dbm.findActivity(101);
+        //dbm.findActivity(109);
+        //dbm.findActivity(10);
 
         // Test login method
         dbm.login("jsmith");

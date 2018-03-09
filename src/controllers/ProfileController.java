@@ -6,6 +6,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import scene.SceneHolder;
+
+import java.sql.SQLException;
 import java.util.*;
 
 public class ProfileController {
@@ -24,55 +26,22 @@ public class ProfileController {
     public CheckBox skiingBox;
 
 
-    public void loadUserPreferences()
-    {
+    public void loadUserPreferences() throws SQLException {
         //TODO: query database for user preferences
-
-        try {
             userName.setText(DBManager.db.getUserName());
             userDOB.setText(DBManager.db.getDOB());
             boolean[] interests = DBManager.db.getUserInterests();
 
-            for(int i = 0; i < interests.length; i++)
-                System.out.println(interests[i]);
-
             hikingBox.setSelected(interests[0]);
-            System.out.println(interests[0]);
-
             bikingBox.setSelected(interests[1]);
-            System.out.println(interests[1]);
-
             walkingBox.setSelected(interests[2]);
-            System.out.println(interests[2]);
-
             snowboardingBox.setSelected(interests[3]);
-            System.out.println(interests[3]);
-
             fishingBox.setSelected(interests[4]);
-            System.out.println(interests[4]);
-
             runningBox.setSelected(interests[5]);
-            System.out.println(interests[5]);
-
             swimmingBox.setSelected(interests[6]);
-            System.out.println(interests[6]);
-
             polevaultingBox.setSelected(interests[7]);
-            System.out.println(interests[7]);
-
             skydivingBox.setSelected(interests[8]);
-            System.out.println(interests[8]);
-
             skiingBox.setSelected(interests[9]);
-            System.out.println(interests[9]);
-
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-
-
     }
 
     public void goToMenu(ActionEvent actionEvent) {
@@ -117,8 +86,8 @@ public class ProfileController {
                 DBManager.db.setUserInterest(110);
         }
         catch (Exception e){
-
         }
+
         SceneHolder.primaryStage.setScene(SceneHolder.mainMenuScene);
     }
 }

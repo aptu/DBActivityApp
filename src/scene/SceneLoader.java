@@ -13,8 +13,8 @@ public class SceneLoader {
         Parent loginSceneLayout = FXMLLoader.load(mainClass.getResource("scene_layouts/login_scene_layout.fxml"));
         SceneHolder.loginScene = new Scene(loginSceneLayout, 402, 786);
 
-        Parent mainMenuSceneLaoyout = FXMLLoader.load(mainClass.getResource("scene_layouts/main_menu_scene_layout.fxml"));
-        SceneHolder.mainMenuScene = new Scene(mainMenuSceneLaoyout, 402, 786);
+        Parent mainMenuSceneLayout = FXMLLoader.load(mainClass.getResource("scene_layouts/main_menu_scene_layout.fxml"));
+        SceneHolder.mainMenuScene = new Scene(mainMenuSceneLayout, 402, 786);
 
 
         FXMLLoader loader = new FXMLLoader(mainClass.getResource("scene_layouts/profile_scene_layout.fxml"));
@@ -27,11 +27,13 @@ public class SceneLoader {
         SceneHolder.activityScene= new Scene(activitySceneLayout, 402, 786);
         ControllerHolder.activityController = loader.getController();
 
-        Parent findActivitySceneLaoyout = FXMLLoader.load(mainClass.getResource("scene_layouts/find_activity_scene_layout.fxml"));
-        SceneHolder.findActivityScene = new Scene(findActivitySceneLaoyout, 402, 786);
+        loader = new FXMLLoader(mainClass.getResource("scene_layouts/find_activity_scene_layout.fxml"));
+        Parent findActivitySceneLayout = loader.load();
+        SceneHolder.findActivityScene = new Scene(findActivitySceneLayout, 402, 786);
+        ControllerHolder.findActivityController = loader.getController();
 
-        Parent eventSceneLaoyout = FXMLLoader.load(mainClass.getResource("scene_layouts/events_scene_layout.fxml"));
-        SceneHolder.eventScene = new Scene(eventSceneLaoyout, 402, 786);
+        Parent eventSceneLayout = FXMLLoader.load(mainClass.getResource("scene_layouts/events_scene_layout.fxml"));
+        SceneHolder.eventScene = new Scene(eventSceneLayout, 402, 786);
 
     }
 }
