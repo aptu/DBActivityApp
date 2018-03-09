@@ -124,7 +124,14 @@ public class DBManager {
     }
 
     public String getGender() throws SQLException {
-        return "";
+        PreparedStatement statement = connect.prepareStatement("select Gender from ActivityApp.User where UserID = ?");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+        String gender = null;
+        while (result.next()) {
+            gender = result.getString("Gender");
+        }
+        return gender;
     }
 
     public List<String> getUserHistory() throws SQLException {
@@ -265,8 +272,8 @@ public class DBManager {
         }
         boolean[] boolInterests = new boolean[10];
 
-        System.out.println(userInterests);
-        System.out.println(allInterests);
+        //System.out.println(userInterests);
+        //System.out.println(allInterests);
         // check if it worked
 
         for(int i = 0; i < boolInterests.length; i++){
