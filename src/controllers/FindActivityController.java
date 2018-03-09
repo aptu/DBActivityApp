@@ -64,12 +64,9 @@ public class FindActivityController {
             {
                 list.add(s);
             }
-
         }
 
         eventList.setItems(list);
-
-
     }
 
     public void useActivity(ActionEvent actionEvent) {
