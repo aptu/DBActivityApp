@@ -7,5 +7,5 @@ public class SceneHolder {
 
     public static Stage primaryStage;
     public static Scene loginScene, mainMenuScene, profileScene, activityScene, findActivityScene,
-    eventScene, historyScene;
+    eventScene, historyScene, findEventScene, myEventsScene, createEventScene;
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="786.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateEventController">
+   <children>
+      <ImageView fitHeight="786.0" fitWidth="402.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@PhoneBackground.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="backButton" layoutX="245.0" layoutY="626.0" mnemonicParsing="false" onAction="#goToMenu" prefHeight="44.0" prefWidth="123.0" text="Back" />
+      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" onMouseClicked="#pickLocation" pannable="true" prefHeight="275.0" prefWidth="336.0">
+         <content>
+            <ImageView fx:id="mapView" fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Map.png" />
+               </image>
+            </ImageView>
+         </content>
+      </ScrollPane>
+      <Label layoutX="53.0" layoutY="393.0" text="Event Name" />
+      <TextField fx:id="eventName" layoutX="171.0" layoutY="389.0" />
+      <Label layoutX="49.0" layoutY="442.0" text="Event Activity" />
+      <ChoiceBox fx:id="activitySelect" layoutX="170.0" layoutY="438.0" prefWidth="150.0" />
+      <DatePicker fx:id="startTimeSelect" layoutX="171.0" layoutY="486.0" prefHeight="25.0" prefWidth="149.0" />
+      <Label layoutX="58.0" layoutY="490.0" text="Start Time" />
+      <Label layoutX="60.0" layoutY="531.0" text="End Time" />
+      <DatePicker fx:id="endTimeSelect" layoutX="171.0" layoutY="527.0" prefHeight="25.0" prefWidth="149.0" />
+      <Button fx:id="createEventButton" layoutX="45.0" layoutY="627.0" mnemonicParsing="false" onAction="#createEvent" prefHeight="44.0" prefWidth="123.0" text="Create Event" />
+   </children>
+</Pane>

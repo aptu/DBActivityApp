@@ -5,10 +5,19 @@ import scene.SceneHolder;
 
 public class EventController {
     public void goToFindEvent(ActionEvent actionEvent) {
-
+        SceneHolder.primaryStage.setScene(SceneHolder.findEventScene);
     }
 
     public void goToMenu(ActionEvent actionEvent) {
         SceneHolder.primaryStage.setScene(SceneHolder.mainMenuScene);
     }
+
+    public void goToMyEvents(ActionEvent actionEvent) {
+        SceneHolder.primaryStage.setScene(SceneHolder.myEventsScene);
+    }
+
+    public void goToCreateEvent(ActionEvent actionEvent) {
+        SceneHolder.primaryStage.setScene(SceneHolder.createEventScene);
+    }
+
 }
