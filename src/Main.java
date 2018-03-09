@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
         SceneHolder.primaryStage = primaryStage;
 
@@ -24,9 +24,7 @@ public class Main extends Application {
 
     public static void main(String[] args) throws SQLException {
 
-            DBManager.db = new DBManager();
-
-
+        DBManager.db = new DBManager();
         launch(args);
     }
 }

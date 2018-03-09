@@ -5,16 +5,9 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-
 
 /**
  * DBManager connects to ActivityApp database.
@@ -28,9 +21,9 @@ public class DBManager {
 
     private Connection connect = null;
     int currActivityId = -1;
-    Map<Integer, Activity> listOfActivities = new HashMap<>();
+    Map<Integer, Activity> listOfActivities = new HashMap<Integer, Activity>();
     Map<String, Integer> activityIDMap = new HashMap<String, Integer>();
-    Map<Integer, Event> listOfEvents = new HashMap<>();
+    Map<Integer, Event> listOfEvents = new HashMap<Integer, Event>();
     List<String> userInterests = new ArrayList<String>();
     List<String> allInterests = new ArrayList<String>();
 
