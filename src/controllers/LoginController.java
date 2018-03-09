@@ -18,18 +18,19 @@ public class LoginController {
 
         //TODO: double check that the user exists (we don't care about passwords)
 
-        boolean suceeded = false;
+        boolean succeeded = false;
 
         try {
             DBManager.db.connect(password_input.getText());
-            suceeded = DBManager.db.login(userInput.getText());
+            succeeded = DBManager.db.login(userInput.getText());
+            System.out.println(String.format("Login succeeded = %s", succeeded));
         }
         catch (Exception e)
         {
-
+            System.out.println(e);
         }
 
-        if(suceeded)
+        if(succeeded)
             SceneHolder.primaryStage.setScene(SceneHolder.mainMenuScene);
         else
         {

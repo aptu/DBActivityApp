@@ -1,5 +1,7 @@
 package db;
 
+import jdk.nashorn.internal.runtime.QuotedStringTokenizer;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -288,7 +290,52 @@ public class DBManager {
     }
     //
 
-    // Methods to get statistics
+    // STATISTICS done last night DIDN"T TEST THEM TODO: TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    public double getLastMonthDistance() throws SQLException {
+        double distance = 0.0;
+        PreparedStatement statement = connect.prepareStatement("select sum(Distance) as dist " +
+                "from ActivityApp.ActivityHistory where UserID = ? and DateTime <= Date_sub(now(), interval 1 month");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            distance = result.getDouble("dist");
+        }
+        System.out.println("Distance per month: "  + distance);
+        return distance;
+    }
+
+    public double getLastMonthCaloriesBurned() throws SQLException {
+        double calburned = 0.0;
+        PreparedStatement statement = connect.prepareStatement("select sum(CalBurned) as calBurned " +
+                "from ActivityApp.ActivityHistory where UserID = ? and DateTime <= Date_sub(now(), interval 1 month");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            calburned = result.getDouble("calBurned");
+        }
+        System.out.println("Distance per month: "  + calburned);
+        return calburned;
+    }
+
+    public Map<String, Double> getAvgCaloriesBurned() throws SQLException {
+        Map<String, Double> avgCalBurned = new HashMap<>();
+        double avgCal = 0.0;
+        String type = "";
+        PreparedStatement statement = connect.prepareStatement("select Activity.Type, avg(ActivityHistory.CalBurned) as avgCalBurned " +
+                "from ActivityApp.ActivityHistory, ActivityApp.Activity where ActivityHistory.UserID = ? group by ActivityHistory.ActivityID");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            type = result.getString("Type");
+            avgCal = result.getDouble("avgCalBurned");
+            avgCalBurned.put(type, avgCal);
+        }
+        System.out.println(avgCalBurned);
+        return avgCalBurned;
+    }
+
+
 
     public double getMySpeed(){
         double myspeed = 0.0;
@@ -406,6 +453,9 @@ public class DBManager {
 
         // See user Interests
         dbm.getUserInterests();
+
+        // get stats
+        dbm.getLastMonthDistance();
 
         // create new Event
         //dbm.saveEvent(new Event(LocalDateTime.now(), "Rattlesnake Ledge", 103 ));
