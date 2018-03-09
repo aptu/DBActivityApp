@@ -34,8 +34,8 @@
         </rowConstraints>
          <children>
             <Button mnemonicParsing="false" onAction="#goToFindEvent" prefHeight="44.0" prefWidth="123.0" text="Find Event" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="123.0" text="My Events" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="123.0" text="Create Event" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" onAction="#goToMyEvents" prefHeight="44.0" prefWidth="123.0" text="My Events" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onAction="#goToCreateEvent" prefHeight="44.0" prefWidth="123.0" text="Create Event" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Button mnemonicParsing="false" onAction="#goToMenu" prefHeight="44.0" prefWidth="123.0" text="Back" GridPane.columnIndex="3" GridPane.rowIndex="7" />
          </children>
       </GridPane>
