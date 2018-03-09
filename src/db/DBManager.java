@@ -1,6 +1,6 @@
 package db;
 
-import jdk.nashorn.internal.runtime.QuotedStringTokenizer;
+//import jdk.nashorn.internal.runtime.QuotedStringTokenizer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -132,6 +132,29 @@ public class DBManager {
         return  dob;
     }
 
+    public String getGender() throws SQLException {
+        return "";
+    }
+
+    public List<String> getUserHistory() throws SQLException {
+        List<String> history = new ArrayList<String>();
+
+        PreparedStatement statement = connect.prepareStatement("select a.Type from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
+                " where ah.UserID = ? AND ah.ActivityID = a.ActivityID");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+        //int id;
+        String name;
+
+        while (result.next()){
+            //id = result.getInt("ActivityID");
+            name = result.getString("Type");
+            //Activity activity = new Activity(id, name);
+            history.add(name);
+        }
+
+        return history;
+    }
 
     // Insert new activity into the table Activity
     public void saveActivity(Activity activity) throws SQLException {
@@ -232,6 +255,8 @@ public class DBManager {
             return false;
         }
     }
+
+
     // TODO: select the list of booleans
     // Displays all interests (activities) or display my events
     public boolean[] getUserInterests() throws SQLException{

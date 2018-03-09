@@ -29,7 +29,9 @@ public class MainMenuController {
         SceneHolder.primaryStage.setScene(SceneHolder.profileScene);
     }
 
-    public void goToHistory(ActionEvent actionEvent) {
+    public void goToHistory(ActionEvent actionEvent) throws SQLException {
+        ControllerHolder.historyController.loadHistory();
+        SceneHolder.primaryStage.setScene(SceneHolder.historyScene);
     }
 
 
