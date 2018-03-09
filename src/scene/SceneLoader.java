@@ -35,5 +35,9 @@ public class SceneLoader {
         Parent eventSceneLayout = FXMLLoader.load(mainClass.getResource("scene_layouts/events_scene_layout.fxml"));
         SceneHolder.eventScene = new Scene(eventSceneLayout, 402, 786);
 
+        loader = new FXMLLoader(mainClass.getResource("scene_layouts/history_scene_layout.fxml"));
+        Parent historySceneLayout = loader.load();
+        SceneHolder.historyScene = new Scene(historySceneLayout, 402, 786);
+        ControllerHolder.historyController = loader.getController();
     }
 }
