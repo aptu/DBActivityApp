@@ -39,8 +39,9 @@ public class FindActivityController {
         if (!isLoaded) {
 
             ObservableList<String> list = FXCollections.observableArrayList();
-            list.add("5 Miles");
-            list.add("10 Miles");
+            list.add("1 mile");
+            list.add("5 miles");
+            list.add("10 miles");
             distanceList.setItems(list);
             distanceList.setValue(list.get(0));
 
