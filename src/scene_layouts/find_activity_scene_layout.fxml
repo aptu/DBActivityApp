@@ -24,13 +24,17 @@
          </image>
       </ImageView>
       <Button fx:id="backButton" layoutX="245.0" layoutY="626.0" mnemonicParsing="false" onAction="#goToMenu" prefHeight="44.0" prefWidth="123.0" text="Back" />
-      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" prefHeight="275.0" prefWidth="336.0">
+      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" pannable="true" prefHeight="275.0" prefWidth="336.0">
          <content>
-            <ImageView fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Map.png" />
-               </image>
-            </ImageView>
+            <Pane fx:id="scrollCanvas" prefHeight="580.0" prefWidth="800.0">
+               <children>
+                  <ImageView fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Map.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
          </content>
       </ScrollPane>
       <ListView fx:id="eventList" layoutX="45.0" layoutY="376.0" prefHeight="106.0" prefWidth="311.0" />
