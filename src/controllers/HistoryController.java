@@ -52,14 +52,14 @@ public class HistoryController {
 
             ActivityHistoryItem selected = userHistory.get(index.get(0));
 
-            activityLocationMarker.setX(selected.getLatitude() - 15);
-            activityLocationMarker.setY(selected.getLongitude() - 15);
+            activityLocationMarker.setX(selected.getLatitude() - ControllerHolder.ActivityOffset);
+            activityLocationMarker.setY(selected.getLongitude() - ControllerHolder.ActivityOffset);
 
-            double vPercet = (selected.getLatitude() - 15 - 68.75) / 580.0;
+            double vPercet = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
             vPercet = (vPercet < 0) ? 0 : vPercet;
             vPercet = (vPercet > 1) ? 1 : vPercet;
 
-            double hPecent = (selected.getLongitude() - 15 - 84) / 800.0;
+            double hPecent = (selected.getLongitude() - ControllerHolder.ActivityOffset - 84) / 800.0;
             hPecent = (hPecent < 0) ? 0 : hPecent;
             hPecent = (hPecent > 1) ? 1 : hPecent;
 
