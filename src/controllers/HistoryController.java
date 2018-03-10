@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import scene.SceneHolder;
 
@@ -19,6 +20,7 @@ public class HistoryController {
     public ListView historyList;
     public ScrollPane mapScrollPane;
     public ImageView activityLocationMarker;
+    public Label historyText;
     private List<ActivityHistoryItem> userHistory;
 
     public void loadHistory() throws SQLException {
@@ -40,6 +42,7 @@ public class HistoryController {
         else {
             activityLocationMarker.setVisible(false);
         }
+
     }
 
     public void goToMenu(ActionEvent actionEvent) {
@@ -65,6 +68,9 @@ public class HistoryController {
 
             mapScrollPane.setVvalue(vPercet);
             mapScrollPane.setHvalue(hPecent);
+
+            historyText.setText("ActivityTime: " + selected.getDateTime() + "\n" + "Calories burned: " +
+                    selected.getCalBurned() + "\n" + "Duration: " + selected.getDuration() + "\n" + "Distance: " + selected.getDistance());
         }
 
 
