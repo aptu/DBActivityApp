@@ -31,9 +31,9 @@
             <String fx:value="Biking" />
             <String fx:value="Swimming" />
             <String fx:value="Walking" />
-            <String fx:value="Pole Vaulting" />
+            <String fx:value="Polevaulting" />
             <String fx:value="Snowboarding" />
-            <String fx:value="Sky Diving" />
+            <String fx:value="Skydiving" />
             <String fx:value="Fishing" />
             <String fx:value="Skiing" />
          </FXCollections>

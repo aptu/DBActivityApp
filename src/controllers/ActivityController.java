@@ -1,5 +1,6 @@
 package controllers;
 
+import db.DBManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -8,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.concurrent.Task;
 import scene.SceneHolder;
 
+import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.List;
 
 public class ActivityController {
     public ChoiceBox activityTypeBox;
@@ -122,9 +125,26 @@ public class ActivityController {
     }
 
     private void getDefaultInterest() {
+        // default interested is a random interest form the user interestes.
         if (!activityOngoing) {
-            // TODO: Get a default interest
-            // based on interests or history?
+            boolean[] boolInterests;
+            List<String> allActivities = DBManager.db.getAllActivities();
+            try {
+                boolInterests = DBManager.db.getUserInterests();
+                int i;
+                for(i = 0; i < boolInterests.length; i++) {
+                    if(boolInterests[i])
+                        break;
+                }
+
+                if(i == boolInterests.length)
+                    return;
+
+                activityTypeBox.setValue(allActivities.get(i));
+
+            } catch(SQLException e) {
+                System.out.println("Error getting user interests from DB");
+            }
         }
     }
 }
