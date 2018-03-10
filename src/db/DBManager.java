@@ -133,21 +133,40 @@ public class DBManager {
         return gender;
     }
 
-    public List<String> getUserHistory() throws SQLException {
-        List<String> history = new ArrayList<String>();
-
-        PreparedStatement statement = connection.prepareStatement("select a.Type from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
-                " where ah.UserID = ? AND ah.ActivityID = a.ActivityID");
+    public List<ActivityHistoryItem> getUserHistory() throws SQLException {
+        List<ActivityHistoryItem> history = new ArrayList<ActivityHistoryItem>();
+        PreparedStatement statement;
+        statement = connect.prepareStatement("select ah.UserID, a.Type, " +
+                "ah.DateTime, ah.CalBurned, ah.Duration, ah.Distance, ah.Latitude" +
+                ", ah.Longitude from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
+                " where ah.UserID = ? AND ah.ActivityID = a.ActivityID" +
+                " order by ah.DateTime desc");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
-        //int id;
-        String name;
+
+        int id;
+        String activity;
+        java.sql.Timestamp dateTime;
+        int calBurned;
+        int duration;
+        Integer distance;
+        int latitude;
+        int longitude;
+
 
         while (result.next()){
-            //id = result.getInt("ActivityID");
-            name = result.getString("Type");
-            //Activity activity = new Activity(id, name);
-            history.add(name);
+            ActivityHistoryItem item;
+            id = result.getInt("UserID");
+            activity = result.getString("Type");
+            dateTime = result.getTimestamp("DateTime");
+            calBurned = result.getInt("CalBurned");
+            duration = result.getInt("Duration");
+            distance = result.getInt("Distance");
+            latitude = result.getInt("Latitude");
+            longitude = result.getInt("Longitude");
+            item = new ActivityHistoryItem(-1, id, activity,dateTime.toLocalDateTime(),
+                    calBurned, duration, distance, latitude, longitude);
+            history.add(item);
         }
 
         return history;
@@ -161,8 +180,8 @@ public class DBManager {
     }
 
     // Insert new activity into the table ActivityHistory
-    public void saveActivitytoHistory(ActivityHistory activity) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.ActivityHistory" +
+    public void saveActivitytoHistory(ActivityHistoryItem activity) throws SQLException {
+        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.ActivityHistory" +
                 " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, Latitude, Longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setInt(1, activity.getLoggedId());
         statement.setInt(2, activity.getUserId());
