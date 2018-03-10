@@ -3,10 +3,11 @@ import java.time.LocalDateTime;
 /**
  *
  */
-public class ActivityHistory {
+public class ActivityHistoryItem {
     private int loggedId;
     private int userId;
     private int activityId;
+    private String activityName;
     private LocalDateTime dateTime;
     private int calBurned;
     private int duration;
@@ -25,7 +26,7 @@ public class ActivityHistory {
 
 
     // Constructor which uses the Auto-increment property of loggedId
-    public ActivityHistory( int userId, int activityId, LocalDateTime dateTime,
+    public ActivityHistoryItem( int userId, int activityId, LocalDateTime dateTime,
                             int calBurned, int duration,double distance, double latitude, double longitude) {
         this.userId = userId;
         this.activityId = activityId;
@@ -38,10 +39,11 @@ public class ActivityHistory {
 
     }
 
-    public ActivityHistory(int loggedId, int userId, int activityId, LocalDateTime dateTime,
+    public ActivityHistoryItem(int loggedId, int userId, String activity, LocalDateTime dateTime,
                            int calBurned, int duration, double distance, double latitude, double longitude) {
 
-        this(userId, activityId, dateTime, calBurned, duration, distance, latitude, longitude);
+        this(userId, 0, dateTime, calBurned, duration, distance, latitude, longitude);
+        activityName = activity;
         this.loggedId = loggedId;
     }
 
@@ -54,6 +56,9 @@ public class ActivityHistory {
         return activityId;
     }
 
+    public String getActivityName(){
+        return activityName;
+    }
 
     public LocalDateTime getDateTime() {
         return dateTime;

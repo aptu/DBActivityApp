@@ -48,11 +48,11 @@ public class FindActivityController {
             userLocation.setY(ControllerHolder.UserLocationY - 30);
             scrollCanvas.getChildren().add(userLocation);
 
-            double vPercet = (ControllerHolder.UserLocationY - 30) /580.0;
+            double vPercet = (ControllerHolder.UserLocationY - 30 - 68.75) /580.0;
             vPercet = (vPercet < 0)?0:vPercet;
             vPercet = (vPercet > 1)?1:vPercet;
 
-            double hPecent = (ControllerHolder.UserLocationX - 30) / 800.0;
+            double hPecent = (ControllerHolder.UserLocationX - 30 - 84) / 800.0;
             hPecent = (hPecent < 0)?0:hPecent;
             hPecent = (hPecent > 1)?1:hPecent;
 
