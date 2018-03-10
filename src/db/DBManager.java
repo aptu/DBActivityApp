@@ -47,30 +47,6 @@ public class DBManager {
         }
     }
 
-    public void logout()throws SQLException{
-        connection.close();
-        currUserId = -1;
-        userInterests.clear();
-    }
-
-    public List<String> getAllActivities() {
-        return allInterests;
-    }
-
-    public List<String> getListOfAllActivities() throws  SQLException {
-
-        List<String> activities = new ArrayList<String>();
-        PreparedStatement statement = connection.prepareStatement("select LocName from ActivityApp.LocatableActivity");
-        String name;
-        ResultSet result= statement.executeQuery();
-        while (result.next()) {
-            name = result.getString("LocName");
-            activities.add(name);
-        }
-
-        return activities;
-    }
-
     // 1 When login button is pressed, we check if user exists and setup the userID
     public Boolean login(String userName) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.User" +
@@ -93,6 +69,61 @@ public class DBManager {
             return  false;
         }
     }
+
+    public void logout()throws SQLException{
+        connection.close();
+        currUserId = -1;
+        userInterests.clear();
+    }
+
+    public List<String> getAllActivities() {
+        return allInterests;
+    }
+
+    public List<LocatableActivityItem> findAllActivities() throws  SQLException {
+
+        List<LocatableActivityItem> activities = new ArrayList<LocatableActivityItem>();
+        PreparedStatement statement = connection.prepareStatement("select l.LocName, a.Type, l.Latitude, l.Longitude" +
+                " from ActivityApp.LocatableActivity l, ActivityApp.Activity a where l.ActivityID = a.ActivityID");
+
+        String name;
+        String activity;
+        int latitude, longitude;
+        ResultSet result= statement.executeQuery();
+        while (result.next()) {
+            name = result.getString("LocName");
+            activity = result.getString("Type");
+            latitude = result.getInt("Latitude");
+            longitude = result.getInt("Longitude");
+            activities.add(new LocatableActivityItem(name, activity, null, null, latitude, longitude));
+        }
+
+        return activities;
+    }
+
+    // Select activity by ID
+    // Returns the name of activity
+    public List<LocatableActivityItem> findActivity(String activityType) throws SQLException {
+        List<LocatableActivityItem> activities = new ArrayList<LocatableActivityItem>();
+        PreparedStatement statement = connection.prepareStatement("select l.LocName, a.Type, l.Latitude, l.Longitude" +
+                " from ActivityApp.LocatableActivity l, ActivityApp.Activity a where l.ActivityID = ? and l.ActivityID = a.ActivityID");
+
+        statement.setInt(1, activityIDMap.get(activityType));
+        String name;
+        String activity;
+        int latitude, longitude;
+        ResultSet result= statement.executeQuery();
+        while (result.next()) {
+            name = result.getString("LocName");
+            activity = result.getString("Type");
+            latitude = result.getInt("Latitude");
+            longitude = result.getInt("Longitude");
+            activities.add(new LocatableActivityItem(name, activity, null, null, latitude, longitude));
+        }
+
+        return activities;
+    }
+
 
     public String getUserName() throws SQLException {
         String fname = null;
@@ -240,25 +271,6 @@ public class DBManager {
             System.out.println(e + "\t " + listOfEvents.get(e).toString());
         }
     }
-
-    // Select activity by ID
-    // Returns the name of activity
-    public List<String> findActivity(String activityType) throws SQLException {
-
-        List<String> activities = new ArrayList<String>();
-        PreparedStatement statement = connection.prepareStatement("select LocName from ActivityApp.LocatableActivity where ActivityId = ?");
-
-        statement.setInt(1, activityIDMap.get(activityType));
-        String name;
-        ResultSet result= statement.executeQuery();
-        while (result.next()) {
-            name = result.getString("LocName");
-            activities.add(name);
-        }
-
-        return activities;
-    }
-
 
     // Set currActivity & update it
     public boolean recordActivity(int id)  {

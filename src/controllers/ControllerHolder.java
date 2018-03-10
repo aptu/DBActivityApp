@@ -4,6 +4,7 @@ public class ControllerHolder {
 
 
     public static int UserLocationX, UserLocationY;
+    final public static int ActivityOffset = 10;
 
     public static ProfileController profileController;
     public static ActivityController activityController;

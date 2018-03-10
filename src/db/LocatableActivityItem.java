@@ -1,14 +1,17 @@
 package db;
 
 /**
- *
+ *a
  */
-public class LocatableActivity {
+public class LocatableActivityItem {
     private int locationId;
     private String locName;
     private int activityId;
+    private String activityName;
     private String scenery;
     private String difficulty;
+    private int latitude;
+    private int longitude;
 
     public int getLocationId() {
         return locationId;
@@ -18,7 +21,7 @@ public class LocatableActivity {
         this.locationId = locationId;
     }
 
-    public LocatableActivity(int locationId, String locName, int activityId, String scenery, String difficulty) {
+    public LocatableActivityItem(int locationId, String locName, int activityId, String scenery, String difficulty) {
         this.locationId = locationId;
         this.locName = locName;
         this.activityId = activityId;
@@ -27,15 +30,21 @@ public class LocatableActivity {
     }
 
     // Constructor that makes use of auto-increment property
-    public LocatableActivity( String locName, int activityId, String scenery, String difficulty) {
+    public LocatableActivityItem( String locName, String activity, String scenery, String difficulty, int lat, int lon) {
         this.locName = locName;
         this.activityId = activityId;
         this.difficulty = difficulty;
         this.scenery = scenery;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     public String getLocName() {
         return locName;
+    }
+
+    public String getActivityName() {
+        return activityName;
     }
 
     public void setLocName(String locName) {
@@ -64,5 +73,13 @@ public class LocatableActivity {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public int getLatitude(){
+        return latitude;
+    }
+
+    public int getLongitude(){
+        return longitude;
     }
 }
