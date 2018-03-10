@@ -136,7 +136,7 @@ public class DBManager {
     public List<ActivityHistoryItem> getUserHistory() throws SQLException {
         List<ActivityHistoryItem> history = new ArrayList<ActivityHistoryItem>();
         PreparedStatement statement;
-        statement = connect.prepareStatement("select ah.UserID, a.Type, " +
+        statement = connection.prepareStatement("select ah.UserID, a.Type, " +
                 "ah.DateTime, ah.CalBurned, ah.Duration, ah.Distance, ah.Latitude" +
                 ", ah.Longitude from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
                 " where ah.UserID = ? AND ah.ActivityID = a.ActivityID" +
@@ -181,7 +181,7 @@ public class DBManager {
 
     // Insert new activity into the table ActivityHistory
     public void saveActivitytoHistory(ActivityHistoryItem activity) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.ActivityHistory" +
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.ActivityHistory" +
                 " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, Latitude, Longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setInt(1, activity.getLoggedId());
         statement.setInt(2, activity.getUserId());
