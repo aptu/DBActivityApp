@@ -15,15 +15,14 @@ import java.util.*;
 public class DBManager {
 
     public static DBManager db;
-    public int currUserId = -1;
+    private int currUserId = -1;
 
-    private Connection connect = null;
-    int currActivityId = -1;
-    Map<Integer, Activity> listOfActivities = new HashMap<Integer, Activity>();
-    Map<String, Integer> activityIDMap = new HashMap<String, Integer>();
-    Map<Integer, Event> listOfEvents = new HashMap<Integer, Event>();
-    List<String> userInterests = new ArrayList<String>();
-    List<String> allInterests = new ArrayList<String>();
+    public Connection connection = null;
+    private Map<Integer, Activity> listOfActivities = new HashMap<Integer, Activity>();
+    private Map<String, Integer> activityIDMap = new HashMap<String, Integer>();
+    private Map<Integer, Event> listOfEvents = new HashMap<Integer, Event>();
+    private List<String> userInterests = new ArrayList<String>();
+    private List<String> allInterests = new ArrayList<String>();
 
 
     public DBManager() {
@@ -32,10 +31,10 @@ public class DBManager {
 
     public void connect(String password) throws SQLException {
         // Establish a connection to the database
-        connect = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com",
+        connection = DriverManager.getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com",
                 "CSS475_2018", password);
         if(allInterests.size() == 0) {
-            PreparedStatement statement = connect.prepareStatement("select ActivityID, Type from ActivityApp.Activity");
+            PreparedStatement statement = connection.prepareStatement("select ActivityID, Type from ActivityApp.Activity");
             String name;
             int id;
             ResultSet result = statement.executeQuery();
@@ -49,19 +48,19 @@ public class DBManager {
     }
 
     public void logout()throws SQLException{
-        connect.close();
+        connection.close();
         currUserId = -1;
         userInterests.clear();
     }
 
-    public List<String> getAllActivities(){
+    public List<String> getAllActivities() {
         return allInterests;
     }
 
-    public List<String> getListofAllActivities() throws  SQLException {
+    public List<String> getListOfAllActivities() throws  SQLException {
 
         List<String> activities = new ArrayList<String>();
-        PreparedStatement statement = connect.prepareStatement("select LocName from ActivityApp.LocatableActivity");
+        PreparedStatement statement = connection.prepareStatement("select LocName from ActivityApp.LocatableActivity");
         String name;
         ResultSet result= statement.executeQuery();
         while (result.next()) {
@@ -74,7 +73,7 @@ public class DBManager {
 
     // 1 When login button is pressed, we check if user exists and setup the userID
     public Boolean login(String userName) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.User" +
+        PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.User" +
                 " where UserName = ?");
         statement.setString(1, userName);
         ResultSet result= statement.executeQuery();
@@ -99,7 +98,7 @@ public class DBManager {
         String fname = null;
         String lname = null;
         if (this.currUserId > 0){
-            PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.User" +
+            PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.User" +
                     " where UserID = ?");
             statement.setInt(1, this.currUserId);
             ResultSet result= statement.executeQuery();
@@ -113,7 +112,7 @@ public class DBManager {
 
     public String getDOB() throws SQLException {
         String dob = null;
-        PreparedStatement statement = connect.prepareStatement("select DOB from ActivityApp.User where UserID = ?");
+        PreparedStatement statement = connection.prepareStatement("select DOB from ActivityApp.User where UserID = ?");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
         while (result.next()){
@@ -124,7 +123,7 @@ public class DBManager {
     }
 
     public String getGender() throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("select Gender from ActivityApp.User where UserID = ?");
+        PreparedStatement statement = connection.prepareStatement("select Gender from ActivityApp.User where UserID = ?");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
         String gender = null;
@@ -137,7 +136,7 @@ public class DBManager {
     public List<String> getUserHistory() throws SQLException {
         List<String> history = new ArrayList<String>();
 
-        PreparedStatement statement = connect.prepareStatement("select a.Type from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
+        PreparedStatement statement = connection.prepareStatement("select a.Type from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
                 " where ah.UserID = ? AND ah.ActivityID = a.ActivityID");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
@@ -156,14 +155,14 @@ public class DBManager {
 
     // Insert new activity into the table Activity
     public void saveActivity(Activity activity) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.Activity (Type) values (?)");
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.Activity (Type) values (?)");
         statement.setString(1, activity.getType());
         statement.execute();
     }
 
     // Insert new activity into the table ActivityHistory
     public void saveActivitytoHistory(ActivityHistory activity) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.ActivityHistory" +
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.ActivityHistory" +
                 " (LoggedID, UserID, ActivityID, DateTime, CalBurned, Duration, Distance, Latitude, Longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setInt(1, activity.getLoggedId());
         statement.setInt(2, activity.getUserId());
@@ -180,7 +179,7 @@ public class DBManager {
     // Query the list of all activities and save in current session
     //TODO: should I return the list??
     public void getListOfActivities() throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Activity");
+        PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.Activity");
         ResultSet result = statement.executeQuery();
         int id;
         String name;
@@ -200,7 +199,7 @@ public class DBManager {
     // Query the list of all activities and save in current session
     //TODO: should I return the list??
     public void getListOfEvents() throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("select * from ActivityApp.Event");
+        PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.Event");
         ResultSet result = statement.executeQuery();
         int id, aid;
         java.sql.Timestamp startTime, endTime; //TODO: format date????
@@ -228,7 +227,7 @@ public class DBManager {
     public List<String> findActivity(String activityType) throws SQLException {
 
         List<String> activities = new ArrayList<String>();
-        PreparedStatement statement = connect.prepareStatement("select LocName from ActivityApp.LocatableActivity where ActivityId = ?");
+        PreparedStatement statement = connection.prepareStatement("select LocName from ActivityApp.LocatableActivity where ActivityId = ?");
 
         statement.setInt(1, activityIDMap.get(activityType));
         String name;
@@ -246,7 +245,6 @@ public class DBManager {
     public boolean recordActivity(int id)  {
         try {
             saveActivity(new Activity(listOfActivities.get(id).getType()));
-            currActivityId = id;
             return true;
         } catch (SQLException e) {
             System.out.println("[Record Activity]: " + e);
@@ -261,7 +259,7 @@ public class DBManager {
         userInterests.clear();
 
         // the user can select any activity from the list and save it in his profile (del prev and add userInterests table)
-        PreparedStatement statement = connect.prepareStatement("select Type from ActivityApp.UserInterests i, " +
+        PreparedStatement statement = connection.prepareStatement("select Type from ActivityApp.UserInterests i, " +
                 "ActivityApp.Activity a where i.ActivityID = a.ActivityID and i.UserID = ?");
         statement.setInt(1, this.currUserId); //TODO: do we need another UserID? I think not
         ResultSet result = statement.executeQuery();
@@ -285,14 +283,14 @@ public class DBManager {
     }
 
     public void clearUserInterest() throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("delete from ActivityApp.UserInterests" +
+        PreparedStatement statement = connection.prepareStatement("delete from ActivityApp.UserInterests" +
                 " where UserID = ?");
         statement.setInt(1, this.currUserId);
         statement.execute();
     }
 
     public void setUserInterest(int activityID) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.UserInterests" +
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.UserInterests" +
                 " (UserID, ActivityID) values (?, ?)");
         statement.setInt(1, this.currUserId);
         statement.setInt(2, activityID);
@@ -301,7 +299,7 @@ public class DBManager {
 
     // Insert new event into the table Event
     public void saveEvent(Event event) throws SQLException {
-        PreparedStatement statement = connect.prepareStatement("insert into ActivityApp.Event" +
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.Event" +
                 " (ActivityID, StartTime, EndTime, EventName, Latitude, Longitude) values (?, ?, ?, ?, ?, ?)");
         statement.setTimestamp(2, java.sql.Timestamp.valueOf(event.getStartTime()));
         statement.setTimestamp(3, java.sql.Timestamp.valueOf(event.getEndTime()));
@@ -317,7 +315,7 @@ public class DBManager {
 
     public double getLastMonthDistance() throws SQLException {
         double distance = 0.0;
-        PreparedStatement statement = connect.prepareStatement("select sum(Distance) as dist " +
+        PreparedStatement statement = connection.prepareStatement("select sum(Distance) as dist " +
                 "from ActivityApp.ActivityHistory where UserID = ? and DateTime <= Date_sub(now(), interval 1 month");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
@@ -330,7 +328,7 @@ public class DBManager {
 
     public double getLastMonthCaloriesBurned() throws SQLException {
         double calburned = 0.0;
-        PreparedStatement statement = connect.prepareStatement("select sum(CalBurned) as calBurned " +
+        PreparedStatement statement = connection.prepareStatement("select sum(CalBurned) as calBurned " +
                 "from ActivityApp.ActivityHistory where UserID = ? and DateTime <= Date_sub(now(), interval 1 month");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
@@ -345,7 +343,7 @@ public class DBManager {
         Map<String, Double> avgCalBurned = new HashMap<>();
         double avgCal = 0.0;
         String type = "";
-        PreparedStatement statement = connect.prepareStatement("select Activity.Type, avg(ActivityHistory.CalBurned) as avgCalBurned " +
+        PreparedStatement statement = connection.prepareStatement("select Activity.Type, avg(ActivityHistory.CalBurned) as avgCalBurned " +
                 "from ActivityApp.ActivityHistory, ActivityApp.Activity where ActivityHistory.UserID = ? group by ActivityHistory.ActivityID");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
@@ -358,38 +356,27 @@ public class DBManager {
         return avgCalBurned;
     }
 
-
-
     public double getMySpeed(){
-        double myspeed = 0.0;
-        return myspeed;
+        // TODO: This function
+        return 0.0;
     }
 
     public double getTotalSpeed() {
-        double speed = 0.0;
-        return speed;
+        // TODO: This function
+        return 0.0;
     }
 
     public double getAvgSpeed() {
-        double speed = 0.0;
-        return speed;
-
+        // TODO: This function
+        return 0.0;
     }
-
-
-
-
-
-
-
-
 
     public void readDataBase() throws Exception {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Setup the connection with the DB
-            connect = DriverManager
+            connection = DriverManager
                     .getConnection("jdbc:mysql://activityapp.c9wvxqrvbvpk.us-west-2.rds.amazonaws.com", "CSS475_2018", "Databases_2018");
 
         } catch (Exception e) {
@@ -421,8 +408,8 @@ public class DBManager {
                 statement.close();
             }
 
-            if (connect != null) {
-                connect.close();
+            if (connection != null) {
+                connection.close();
             }
         } catch (Exception e) {
 
@@ -482,13 +469,6 @@ public class DBManager {
 
         // create new Event
         //dbm.saveEvent(new Event(LocalDateTime.now(), "Rattlesnake Ledge", 103 ));
-
-
-
-
-
     }
-
-
 
 }

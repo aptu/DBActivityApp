@@ -73,7 +73,7 @@ public class FindActivityController {
         ObservableList<String> list = FXCollections.observableArrayList();
         if(activityCheckbox.isSelected())
         {
-            for(String s: DBManager.db.getListofAllActivities())
+            for(String s: DBManager.db.getListOfAllActivities())
             {
                 list.add(s);
             }

@@ -4,12 +4,14 @@ import db.DBManager;
 import javafx.event.ActionEvent;
 import scene.SceneHolder;
 
+import javax.naming.ldap.Control;
 import java.sql.SQLException;
 
 public class MainMenuController {
 
     public void goToActivities(ActionEvent actionEvent) {
         SceneHolder.primaryStage.setScene(SceneHolder.activityScene);
+        ControllerHolder.activityController.init();
     }
 
     public void goToFindActivities(ActionEvent actionEvent) {
