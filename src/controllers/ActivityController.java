@@ -124,6 +124,7 @@ public class ActivityController {
     private void getDefaultInterest() {
         if (!activityOngoing) {
             // TODO: Get a default interest
+            // based on interests or history?
         }
     }
 }
