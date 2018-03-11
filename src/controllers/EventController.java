@@ -5,6 +5,7 @@ import scene.SceneHolder;
 
 public class EventController {
     public void goToFindEvent(ActionEvent actionEvent) {
+        ControllerHolder.findEventController.loadSettings();
         SceneHolder.primaryStage.setScene(SceneHolder.findEventScene);
     }
 
@@ -13,6 +14,7 @@ public class EventController {
     }
 
     public void goToMyEvents(ActionEvent actionEvent) {
+        ControllerHolder.myEventsController.loadEvents();
         SceneHolder.primaryStage.setScene(SceneHolder.myEventsScene);
     }
 

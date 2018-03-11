@@ -37,7 +37,7 @@
       <ListView fx:id="eventList" layoutX="45.0" layoutY="376.0" prefHeight="106.0" prefWidth="311.0" />
       <ChoiceBox fx:id="distanceSelect" layoutX="182.0" layoutY="492.0" prefHeight="26.0" prefWidth="150.0" />
       <Button fx:id="findEventsButton" layoutX="32.0" layoutY="626.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="123.0" text="Find Events" />
-      <CheckBox fx:id="allActivitiesBox" layoutX="245.0" layoutY="530.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="123.0" selected="true" text="All Activities" />
+      <CheckBox fx:id="allActivitiesBox" layoutX="245.0" layoutY="530.0" mnemonicParsing="false" onAction="#useActivity" prefHeight="18.0" prefWidth="123.0" selected="true" text="All Activities" />
       <ChoiceBox fx:id="activitySelect" disable="true" layoutX="218.0" layoutY="554.0" prefWidth="150.0" />
       <Label layoutX="94.0" layoutY="495.0" text="Distance:">
          <font>

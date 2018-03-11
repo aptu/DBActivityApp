@@ -1,10 +1,9 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.sql.Date;
+import java.time.DateTimeException;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -283,6 +282,49 @@ public class DBManager {
         }
     }
 
+    //My Events Scene
+    //--List Events A User Is Attending
+   // SELECT  *
+   // FROM    UserAttendingEvent u, Event e
+   // WHERE   u.UserID = 1
+   // AND     u.EventID = e.EventID
+    // AND     e.startTime > NOW();
+
+    public List<Event> getUserEvents() throws SQLException {
+        List<Event> userEvents = new ArrayList<Event>();
+        System.out.println("Came here 1");
+        PreparedStatement statement = connection.prepareStatement("select * from " +
+                "ActivityApp.UserAttendingEvent ue, ActivityApp.Event e where ue.UserID = ? and ue.EventID = e.EventID " +
+                "and e.StartTime > NOW()");
+        statement.setInt(1, this.currUserId);
+        ResultSet result = statement.executeQuery();
+
+        System.out.println("Came here 2");
+
+        while(result.next()) {
+            int eventId = result.getInt("EventID");
+            int activityId = result.getInt("ActivityID");
+            String eventName = result.getString("EventName");
+            double latitude = result.getDouble("Latitude");
+            double longitude = result.getDouble("Longitude");
+
+            Time startTime = result.getTime("StartTime");
+            Date startDate = result.getDate("StartTime");
+            LocalTime localStartTime = startTime.toLocalTime();
+            LocalDate localStartDate = startDate.toLocalDate();
+
+            Time endTime = result.getTime("EndTime");
+            Date endDate = result.getDate("EndTime");
+            LocalTime localEndTime = endTime.toLocalTime();
+            LocalDate localEndDate = endDate.toLocalDate();
+
+            Event e = new Event(activityId, LocalDateTime.of(localStartDate, localStartTime), LocalDateTime.of(localEndDate, localEndTime), eventName, latitude, longitude);
+            userEvents.add(e);
+        }
+
+        return userEvents;
+    }
+
 
     // TODO: select the list of booleans
     // Displays all interests (activities) or display my events
@@ -328,8 +370,8 @@ public class DBManager {
         statement.execute();
     }
 
-    // Insert new event into the table Event
-    public void saveEvent(Event event) throws SQLException {
+    // Create Event
+    public void createEvent(Event event) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.Event" +
                 " (ActivityID, StartTime, EndTime, EventName, Latitude, Longitude) values (?, ?, ?, ?, ?, ?)");
         statement.setTimestamp(2, java.sql.Timestamp.valueOf(event.getStartTime()));
