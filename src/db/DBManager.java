@@ -15,7 +15,7 @@ import java.util.*;
 public class DBManager {
 
     public static DBManager db;
-    private int currUserId = -1;
+    public int currUserId = -1;
 
     public Connection connection = null;
     private Map<Integer, Activity> listOfActivities = new HashMap<Integer, Activity>();
