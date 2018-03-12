@@ -21,18 +21,22 @@ public class LocatableActivityItem {
         this.locationId = locationId;
     }
 
-    public LocatableActivityItem(int locationId, String locName, int activityId, String scenery, String difficulty) {
+    public LocatableActivityItem(int locationId, String locName, String activity, String scenery, String difficulty, int lat, int lon) {
         this.locationId = locationId;
         this.locName = locName;
-        this.activityId = activityId;
+        this.activityName = activity;
+        //this.activityId = activityId;
         this.difficulty = difficulty;
         this.scenery = scenery;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     // Constructor that makes use of auto-increment property
     public LocatableActivityItem( String locName, String activity, String scenery, String difficulty, int lat, int lon) {
         this.locName = locName;
-        this.activityId = activityId;
+        //this.activityId = activityId;
+        this.activityName = activity;
         this.difficulty = difficulty;
         this.scenery = scenery;
         this.latitude = lat;

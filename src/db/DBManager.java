@@ -82,19 +82,20 @@ public class DBManager {
     public List<LocatableActivityItem> findAllActivities() throws  SQLException {
 
         List<LocatableActivityItem> activities = new ArrayList<LocatableActivityItem>();
-        PreparedStatement statement = connection.prepareStatement("select l.LocName, a.Type, l.Latitude, l.Longitude" +
+        PreparedStatement statement = connection.prepareStatement("select l.LocationID, l.LocName, a.Type, l.Latitude, l.Longitude" +
                 " from ActivityApp.LocatableActivity l, ActivityApp.Activity a where l.ActivityID = a.ActivityID");
-
+        int id;
         String name;
         String activity;
         int latitude, longitude;
         ResultSet result= statement.executeQuery();
         while (result.next()) {
+            id = result.getInt("LocationID");
             name = result.getString("LocName");
             activity = result.getString("Type");
             latitude = result.getInt("Latitude");
             longitude = result.getInt("Longitude");
-            activities.add(new LocatableActivityItem(name, activity, null, null, latitude, longitude));
+            activities.add(new LocatableActivityItem(id, name, activity, null, null, latitude, longitude));
         }
 
         return activities;

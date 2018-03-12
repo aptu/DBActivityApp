@@ -12,6 +12,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import scene.SceneHolder;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,10 @@ public class FindActivityController {
     public ImageView mapImage;
 
     ImageView userLocation;
+    List<ImageView> activityMarkers = new ArrayList<ImageView>();
+    Image activityMarkerImage;
+    Image selectedActivityMarkerImage;
+    Image waypointMarkerImage;
 
 
     boolean isLoaded = false;
@@ -49,6 +55,7 @@ public class FindActivityController {
             for (String s : DBManager.db.getAllActivities()) {
                 list.add(s);
             }
+
             activitySelect.setItems(list);
             activitySelect.setValue(list.get(0));
 
@@ -71,6 +78,10 @@ public class FindActivityController {
             mapScrollPane.setHvalue(hPecent);
             mapScrollPane.setVvalue(vPercet);
 
+            activityMarkerImage = new Image(getClass().getResourceAsStream("ActivityLocation.png"));
+            selectedActivityMarkerImage = new Image(getClass().getResourceAsStream("SelectedLocation.png"));
+            waypointMarkerImage = new Image(getClass().getResourceAsStream("Waypoint.png"));
+
             isLoaded = true;
         }
     }
@@ -80,6 +91,7 @@ public class FindActivityController {
     }
 
     public void findActivities(ActionEvent actionEvent) throws SQLException {
+        activityMarkers.clear();
         scrollCanvas.getChildren().clear();
         scrollCanvas.getChildren().add(mapImage);
 
@@ -92,11 +104,12 @@ public class FindActivityController {
         for(LocatableActivityItem activity: activities)
         {
             ImageView activityLocation = new ImageView();
-            activityLocation.setImage(new Image(getClass().getResourceAsStream("ActivityLocation.png")));
+            activityLocation.setImage(activityMarkerImage);
             activityLocation.setX(activity.getLongitude() - ControllerHolder.ActivityOffset);
             activityLocation.setY(activity.getLatitude() - ControllerHolder.ActivityOffset);
             scrollCanvas.getChildren().add(activityLocation);
 
+            activityMarkers.add(activityLocation);
             list.add(activity.getLocName());
         }
 
@@ -116,11 +129,24 @@ public class FindActivityController {
         }
     }
 
-    public void getSelected(MouseEvent mouseEvent) {
+    public void getSelected(MouseEvent mouseEvent) throws SQLException {
         if(activities.size() > 0) {
-            List<Integer> index = eventList.getSelectionModel().getSelectedIndices();
 
+            List<Integer> index = eventList.getSelectionModel().getSelectedIndices();
+            scrollCanvas.getChildren().clear();
+            scrollCanvas.getChildren().add(mapImage);
             LocatableActivityItem selected = activities.get(index.get(0));
+
+            loadWaypoints(selected.getLocationId());
+
+
+            for(ImageView iv: activityMarkers) {
+                iv.setImage(activityMarkerImage);
+                scrollCanvas.getChildren().add(iv);
+            }
+
+            scrollCanvas.getChildren().add(userLocation);
+            activityMarkers.get(index.get(0)).setImage(selectedActivityMarkerImage);
 
             double vPercet = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
             vPercet = (vPercet < 0) ? 0 : vPercet;
@@ -136,4 +162,26 @@ public class FindActivityController {
 
 
     }
+
+
+    private void loadWaypoints(int LocID) throws SQLException {
+
+        PreparedStatement statement = DBManager.db.connection.prepareStatement("select Longitute, Lattitude from ActivityApp.WayPoints where LocationID = ? order by SeqNumber");
+        statement.setInt(1, LocID);
+
+        int latitude, longitude;
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            latitude = result.getInt("Lattitude");
+            longitude = result.getInt("Longitute");
+
+            ImageView waypoint = new ImageView(waypointMarkerImage);
+            waypoint.setY(latitude);
+            waypoint.setX(longitude);
+            scrollCanvas.getChildren().add(waypoint);
+        }
+
+
+    }
 }
+
