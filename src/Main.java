@@ -25,9 +25,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws SQLException {
-        Random rando = new Random();
-        ControllerHolder.UserLocationX = rando.nextInt(600) + 100;
-        ControllerHolder.UserLocationY = rando.nextInt(500) + 40;
         DBManager.db = new DBManager();
         launch(args);
     }

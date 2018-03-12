@@ -1,5 +1,7 @@
 package db;
 
+import controllers.ControllerHolder;
+
 import java.sql.*;
 import java.sql.Date;
 import java.time.DateTimeException;
@@ -48,6 +50,10 @@ public class DBManager {
 
     // 1 When login button is pressed, we check if user exists and setup the userID
     public Boolean login(String userName) throws SQLException {
+        Random rando = new Random();
+        ControllerHolder.UserLocationX = rando.nextInt(600) + 100;
+        ControllerHolder.UserLocationY = rando.nextInt(500) + 40;
+
         PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.User" +
                 " where UserName = ?");
         statement.setString(1, userName);

@@ -159,8 +159,6 @@ public class FindActivityController {
             mapScrollPane.setVvalue(vPercet);
             mapScrollPane.setHvalue(hPecent);
         }
-
-
     }
 
 
