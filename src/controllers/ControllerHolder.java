@@ -12,4 +12,5 @@ public class ControllerHolder {
     public static HistoryController historyController;
     public static FindEventController findEventController;
     public static MyEventsController myEventsController;
+    public static CreateEventController createEventController;
 }

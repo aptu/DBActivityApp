@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="786.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateEventController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="786.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateEventController">
    <children>
       <ImageView fitHeight="786.0" fitWidth="402.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -24,13 +18,17 @@
          </image>
       </ImageView>
       <Button fx:id="backButton" layoutX="245.0" layoutY="626.0" mnemonicParsing="false" onAction="#goToMenu" prefHeight="44.0" prefWidth="123.0" text="Back" />
-      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" onMouseClicked="#pickLocation" pannable="true" prefHeight="275.0" prefWidth="336.0">
+      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" pannable="true" prefHeight="275.0" prefWidth="336.0">
          <content>
-            <ImageView fx:id="mapView" fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Map.png" />
-               </image>
-            </ImageView>
+            <Pane fx:id="mapCanvas" onMouseClicked="#getLocation" prefHeight="580.0" prefWidth="800.0">
+               <children>
+                  <ImageView fx:id="mapView" fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Map.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
          </content>
       </ScrollPane>
       <Label layoutX="53.0" layoutY="393.0" text="Event Name" />

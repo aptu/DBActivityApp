@@ -53,6 +53,6 @@ public class SceneLoader {
         loader = new FXMLLoader(mainClass.getResource("scene_layouts/create_event_scene_layout.fxml"));
         Parent createEventSceneLayout = loader.load();
         SceneHolder.createEventScene = new Scene(createEventSceneLayout, 402, 786);
-        //ControllerHolder.myEventsController = loader.getController();
+        ControllerHolder.createEventController = loader.getController();
     }
 }

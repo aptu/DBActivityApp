@@ -19,6 +19,7 @@ public class EventController {
     }
 
     public void goToCreateEvent(ActionEvent actionEvent) {
+        ControllerHolder.createEventController.loadSettings();
         SceneHolder.primaryStage.setScene(SceneHolder.createEventScene);
     }
 
