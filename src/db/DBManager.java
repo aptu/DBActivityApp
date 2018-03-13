@@ -187,7 +187,7 @@ public class DBManager {
         PreparedStatement statement;
         statement = connection.prepareStatement("select ah.UserID, a.Type, " +
                 "ah.DateTime, ah.CalBurned, ah.Duration, ah.Distance, ah.Latitude" +
-                ", ah.Longitude from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
+                ", ah.Longitude, ah.ActivityID from ActivityApp.ActivityHistory ah, ActivityApp.Activity a" +
                 " where ah.UserID = ? AND ah.ActivityID = a.ActivityID" +
                 " order by ah.DateTime desc");
         statement.setInt(1, this.currUserId);
@@ -201,6 +201,7 @@ public class DBManager {
         Integer distance;
         int latitude;
         int longitude;
+        int activityID;
 
 
         while (result.next()){
@@ -213,7 +214,8 @@ public class DBManager {
             distance = result.getInt("Distance");
             latitude = result.getInt("Latitude");
             longitude = result.getInt("Longitude");
-            item = new ActivityHistoryItem(-1, id, activity,dateTime.toLocalDateTime(),
+            activityID = result.getInt("ActivityID");
+            item = new ActivityHistoryItem(-1, id, activityID, activity, dateTime.toLocalDateTime(),
                     calBurned, duration, distance, latitude, longitude);
             history.add(item);
         }

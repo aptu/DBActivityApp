@@ -36,13 +36,12 @@ public class ActivityHistoryItem {
         this.distance = distance;
         this.latitude = latitude;
         this.longitude = longitude;
-
     }
 
-    public ActivityHistoryItem(int loggedId, int userId, String activity, LocalDateTime dateTime,
+    public ActivityHistoryItem(int loggedId, int userId, int activityID, String activity, LocalDateTime dateTime,
                            int calBurned, int duration, double distance, double latitude, double longitude) {
 
-        this(userId, 0, dateTime, calBurned, duration, distance, latitude, longitude);
+        this(userId, activityID, dateTime, calBurned, duration, distance, latitude, longitude);
         activityName = activity;
         this.loggedId = loggedId;
     }

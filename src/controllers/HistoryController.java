@@ -12,15 +12,19 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import scene.SceneHolder;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class HistoryController {
 
-    public ListView historyList;
+    public ListView<String> historyList;
     public ScrollPane mapScrollPane;
     public ImageView activityLocationMarker;
     public Label historyText;
+    public Label aggregateText;
     private List<ActivityHistoryItem> userHistory;
 
     public void loadHistory() throws SQLException {
@@ -58,21 +62,80 @@ public class HistoryController {
             activityLocationMarker.setX(selected.getLatitude() - ControllerHolder.ActivityOffset);
             activityLocationMarker.setY(selected.getLongitude() - ControllerHolder.ActivityOffset);
 
-            double vPercet = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
-            vPercet = (vPercet < 0) ? 0 : vPercet;
-            vPercet = (vPercet > 1) ? 1 : vPercet;
+            double vPercent = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
+            vPercent = (vPercent < 0) ? 0 : vPercent;
+            vPercent = (vPercent > 1) ? 1 : vPercent;
 
-            double hPecent = (selected.getLongitude() - ControllerHolder.ActivityOffset - 84) / 800.0;
-            hPecent = (hPecent < 0) ? 0 : hPecent;
-            hPecent = (hPecent > 1) ? 1 : hPecent;
+            double hPercent = (selected.getLongitude() - ControllerHolder.ActivityOffset - 84) / 800.0;
+            hPercent = (hPercent < 0) ? 0 : hPercent;
+            hPercent = (hPercent > 1) ? 1 : hPercent;
 
-            mapScrollPane.setVvalue(vPercet);
-            mapScrollPane.setHvalue(hPecent);
+            mapScrollPane.setVvalue(vPercent);
+            mapScrollPane.setHvalue(hPercent);
 
-            historyText.setText("ActivityTime: " + selected.getDateTime() + "\n" + "Calories burned: " +
+            historyText.setText("Time: " + selected.getDateTime() + "\n" + "Calories burned: " +
                     selected.getCalBurned() + "\n" + "Duration: " + selected.getDuration() + "\n" + "Distance: " + selected.getDistance());
+
+            aggregateText.setText(getAggregateData(selected));
+        }
+    }
+
+    private String getAggregateData(ActivityHistoryItem historyItem)
+    {
+        double averageCaloriesBurned = 0;
+        double averageDuration = 0;
+        double averageDistance = 0;
+        int numEntries = 0;
+
+        try {
+            PreparedStatement query = DBManager.db.connection.prepareStatement(
+                    "SELECT ah.* " +
+                    "FROM ActivityApp.ActivityHistory ah, ActivityApp.User u " +
+                    "WHERE u.UserID != ? " +
+                    "AND u.Gender = ? " +
+                    "AND Abs(Date(?) - u.DOB) < Date('5-0-0') " +
+                    "AND Abs(? - u.Weight) < 30 " +
+                    "AND u.UserID = ah.UserID " +
+                    "AND ah.ActivityID = ?;");
+
+            PreparedStatement myInfo = DBManager.db.connection.prepareStatement("" +
+                    "select * from ActivityApp.User where UserID = ?;");
+            myInfo.setInt(1, DBManager.db.currUserId);
+
+            ResultSet myInfoResults = myInfo.executeQuery();
+            myInfoResults.next();
+            String myGender = myInfoResults.getString("Gender");
+            double weight = myInfoResults.getDouble("Weight");
+            Date dob = myInfoResults.getDate("DOB");
+
+            query.setInt(1, DBManager.db.currUserId);
+            query.setString(2, myGender);
+            query.setDate(3, dob);
+            query.setDouble(4, weight);
+            query.setInt(5, historyItem.getActivityId());
+
+            ResultSet queryResults = query.executeQuery();
+
+            while (queryResults.next()) {
+                numEntries++;
+
+                averageCaloriesBurned += queryResults.getDouble("CalBurned");
+                averageDuration += queryResults.getDouble("Duration");
+                averageDistance += queryResults.getDouble("Distance");
+            }
+            averageCaloriesBurned /= numEntries;
+            averageDuration /= numEntries;
+            averageDistance /= numEntries;
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
 
+        if (numEntries == 0)
+            return "No data available.\nSign up your friends!";
 
+        return "People like you:\n" + "Calories Burned: " + averageCaloriesBurned + "\n" +
+               "Duration: " + averageDuration + "\n" + "Distance: " + averageDistance;
     }
 }
