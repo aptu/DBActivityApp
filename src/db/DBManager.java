@@ -299,14 +299,11 @@ public class DBManager {
 
     public List<Event> getUserEvents() throws SQLException {
         List<Event> userEvents = new ArrayList<Event>();
-        System.out.println("Came here 1");
         PreparedStatement statement = connection.prepareStatement("select * from " +
                 "ActivityApp.UserAttendingEvent ue, ActivityApp.Event e where ue.UserID = ? and ue.EventID = e.EventID " +
                 "and e.StartTime > NOW()");
         statement.setInt(1, this.currUserId);
         ResultSet result = statement.executeQuery();
-
-        System.out.println("Came here 2");
 
         while(result.next()) {
             int eventId = result.getInt("EventID");
@@ -325,7 +322,7 @@ public class DBManager {
             LocalTime localEndTime = endTime.toLocalTime();
             LocalDate localEndDate = endDate.toLocalDate();
 
-            Event e = new Event(activityId, LocalDateTime.of(localStartDate, localStartTime), LocalDateTime.of(localEndDate, localEndTime), eventName, latitude, longitude);
+            Event e = new Event(eventId, activityId, LocalDateTime.of(localStartDate, localStartTime), LocalDateTime.of(localEndDate, localEndTime), eventName, latitude, longitude);
             userEvents.add(e);
         }
 
@@ -342,7 +339,7 @@ public class DBManager {
         statement.setInt(2, eventId);
         statement.execute();
     }
-    
+
     // TODO: select the list of booleans
     // Displays all interests (activities) or display my events
     public boolean[] getUserInterests() throws SQLException{
@@ -388,18 +385,45 @@ public class DBManager {
     }
 
     // Create Event
-    public void createEvent(Event event) throws SQLException {
+    public int createEvent(Event event) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.Event" +
                 " (ActivityID, StartTime, EndTime, EventName, Latitude, Longitude) values (?, ?, ?, ?, ?, ?)");
+        statement.setInt(1, event.getActivityId());
         statement.setTimestamp(2, java.sql.Timestamp.valueOf(event.getStartTime()));
         statement.setTimestamp(3, java.sql.Timestamp.valueOf(event.getEndTime()));
         statement.setString(4, event.getEventName());
-        statement.setInt(1, event.getActivityId());
         statement.setDouble(5, event.getLatitude());
         statement.setDouble(6, event.getLongitude());
         statement.execute();
+        statement = connection.prepareStatement( "SELECT LAST_INSERT_ID()");
+        ResultSet result = statement.executeQuery();
+        int eventId = -1;
+        while (result.next()) {
+            eventId = result.getInt("LAST_INSERT_ID()");
+        }
+        return eventId;
     }
-    //
+
+    // Adds an event to a user
+    public void addUserAttendingEvent(int eventId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("insert into ActivityApp.UserAttendingEvent" +
+                " (UserId, EventId) values(?, ?)");
+        statement.setInt(1, this.currUserId);
+        statement.setInt(2, eventId);
+        statement.execute();
+    }
+
+    // Get activityID from Type
+    public int getActivityIdByType(String type) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select ActivityID from ActivityApp.Activity where Type = ?");
+        statement.setString(1, type);
+        ResultSet result = statement.executeQuery();
+        int activityID = -1;
+        while (result.next()) {
+            activityID = result.getInt("ActivityID");
+        }
+        return activityID;
+    }
 
     // STATISTICS done last night DIDN"T TEST THEM TODO: TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

@@ -14,7 +14,6 @@ import java.util.List;
 public class MyEventsController {
 
     public ListView eventList;
-    private boolean isLoaded = false;
     private List<Event> userEvents;
 
     public void goToMenu(ActionEvent actionEvent) {
@@ -30,23 +29,21 @@ public class MyEventsController {
             } catch (SQLException e) {
                 System.out.println("Error cancelling user event from DB");
             }
+
+            loadEvents();
         }
     }
 
     public void loadEvents() {
-        if (!isLoaded) {
-            try {
-                userEvents = DBManager.db.getUserEvents();
-                ObservableList<String> list = FXCollections.observableArrayList();
-                for (Event e : userEvents) {
-                    list.add(e.getEventName() + " " + e.getStartTime() + " " + e.getEndTime());
-                }
-                eventList.setItems(list);
-            } catch(SQLException e) {
-                System.out.println("Error getting user events from DB");
+        try {
+            userEvents = DBManager.db.getUserEvents();
+            ObservableList<String> list = FXCollections.observableArrayList();
+            for (Event e : userEvents) {
+                list.add(e.getEventName() + " " + e.getStartTime() + " " + e.getEndTime());
             }
-
-            isLoaded = true;
+            eventList.setItems(list);
+        } catch(SQLException e) {
+            System.out.println("Error getting user events from DB");
         }
     }
 
