@@ -332,7 +332,17 @@ public class DBManager {
         return userEvents;
     }
 
+    // // Cancel My events (unsubscribe from going to an event)
+    //Delete from  UserAttendingEvent where UserID = ? and EventID = ?
 
+    public void cancelEvent(int eventId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("delete from ActivityApp.UserAttendingEvent " +
+                "where UserID = ? and EventID = ?");
+        statement.setInt(1, this.currUserId);
+        statement.setInt(2, eventId);
+        statement.execute();
+    }
+    
     // TODO: select the list of booleans
     // Displays all interests (activities) or display my events
     public boolean[] getUserInterests() throws SQLException{

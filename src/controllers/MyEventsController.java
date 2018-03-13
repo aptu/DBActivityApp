@@ -15,20 +15,30 @@ public class MyEventsController {
 
     public ListView eventList;
     private boolean isLoaded = false;
+    private List<Event> userEvents;
+
     public void goToMenu(ActionEvent actionEvent) {
         SceneHolder.primaryStage.setScene(SceneHolder.eventScene);
     }
 
     public void cancelEvent(ActionEvent actionEvent) {
-        
+        if (eventList.getItems().size() > 0) {
+            List<Integer> index = eventList.getSelectionModel().getSelectedIndices();
+            Event selected = userEvents.get(index.get(0));
+            try {
+                DBManager.db.cancelEvent(selected.getEventId());
+            } catch (SQLException e) {
+                System.out.println("Error cancelling user event from DB");
+            }
+        }
     }
 
     public void loadEvents() {
         if (!isLoaded) {
             try {
-                List<Event> events = DBManager.db.getUserEvents();
+                userEvents = DBManager.db.getUserEvents();
                 ObservableList<String> list = FXCollections.observableArrayList();
-                for (Event e : events) {
+                for (Event e : userEvents) {
                     list.add(e.getEventName() + " " + e.getStartTime() + " " + e.getEndTime());
                 }
                 eventList.setItems(list);
@@ -39,4 +49,5 @@ public class MyEventsController {
             isLoaded = true;
         }
     }
+
 }
