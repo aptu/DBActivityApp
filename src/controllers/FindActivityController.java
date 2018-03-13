@@ -63,27 +63,26 @@ public class FindActivityController {
             userLocation.setImage(new Image(getClass().getResourceAsStream("UserLocation.png")));
             scrollCanvas.getChildren().add(userLocation);
 
-            userLocation.setX(ControllerHolder.UserLocationX - 30);
-            userLocation.setY(ControllerHolder.UserLocationY - 30);
-
-            double vPercet = (ControllerHolder.UserLocationY - 30 - 68.75) /580.0;
-            vPercet = (vPercet < 0)?0:vPercet;
-            vPercet = (vPercet > 1)?1:vPercet;
-
-            double hPecent = (ControllerHolder.UserLocationX - 30 - 84) / 800.0;
-            hPecent = (hPecent < 0)?0:hPecent;
-            hPecent = (hPecent > 1)?1:hPecent;
-
-
-            mapScrollPane.setHvalue(hPecent);
-            mapScrollPane.setVvalue(vPercet);
-
             activityMarkerImage = new Image(getClass().getResourceAsStream("ActivityLocation.png"));
             selectedActivityMarkerImage = new Image(getClass().getResourceAsStream("SelectedLocation.png"));
             waypointMarkerImage = new Image(getClass().getResourceAsStream("Waypoint.png"));
-
             isLoaded = true;
         }
+
+        userLocation.setX(ControllerHolder.UserLocationX - 30);
+        userLocation.setY(ControllerHolder.UserLocationY - 30);
+
+        double vPercent = (ControllerHolder.UserLocationY - 30 - 68.75) /580.0;
+        vPercent = (vPercent < 0)?0:vPercent;
+        vPercent = (vPercent > 1)?1:vPercent;
+
+        double hPercent = (ControllerHolder.UserLocationX - 30 - 84) / 800.0;
+        hPercent = (hPercent < 0)?0:hPercent;
+        hPercent = (hPercent > 1)?1:hPercent;
+        
+        mapScrollPane.setHvalue(hPercent);
+        mapScrollPane.setVvalue(vPercent);
+
     }
 
     public void goToMenu(ActionEvent actionEvent) {
@@ -94,12 +93,31 @@ public class FindActivityController {
         activityMarkers.clear();
         scrollCanvas.getChildren().clear();
         scrollCanvas.getChildren().add(mapImage);
+        int distancePerMile = 50;
+        int distance;
+        switch (distanceList.getValue().toString()) {
+            case "1 mile":
+                distance = distancePerMile;
+                break;
+            case "5 miles":
+                distance = 5*distancePerMile;
+                break;
+            case "10 miles":
+                distance = 10*distancePerMile;
+                break;
+            default:
+                distance = distancePerMile;
+                break;
+        }
+
+        //give it just a little bit of padding
+        distance += 10;
 
         ObservableList<String> list = FXCollections.observableArrayList();
         if(activityCheckbox.isSelected())
-            activities = DBManager.db.findAllActivities();
+            activities = DBManager.db.findAllActivities(distance);
         else
-            activities = DBManager.db.findActivity(activitySelect.getValue().toString());
+            activities = DBManager.db.findActivity(activitySelect.getValue().toString(), distance);
 
         for(LocatableActivityItem activity: activities)
         {
@@ -110,7 +128,7 @@ public class FindActivityController {
             scrollCanvas.getChildren().add(activityLocation);
 
             activityMarkers.add(activityLocation);
-            list.add(activity.getLocName());
+            list.add(activity.getActivityName()+": "+activity.getLocName());
         }
 
         scrollCanvas.getChildren().add(userLocation);
@@ -148,16 +166,16 @@ public class FindActivityController {
             scrollCanvas.getChildren().add(userLocation);
             activityMarkers.get(index.get(0)).setImage(selectedActivityMarkerImage);
 
-            double vPercet = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
-            vPercet = (vPercet < 0) ? 0 : vPercet;
-            vPercet = (vPercet > 1) ? 1 : vPercet;
+            double vPercent = (selected.getLatitude() - ControllerHolder.ActivityOffset - 68.75) / 580.0;
+            vPercent = (vPercent < 0) ? 0 : vPercent;
+            vPercent = (vPercent > 1) ? 1 : vPercent;
 
-            double hPecent = (selected.getLongitude() - ControllerHolder.ActivityOffset - 84) / 800.0;
-            hPecent = (hPecent < 0) ? 0 : hPecent;
-            hPecent = (hPecent > 1) ? 1 : hPecent;
+            double hPercent = (selected.getLongitude() - ControllerHolder.ActivityOffset - 84) / 800.0;
+            hPercent = (hPercent < 0) ? 0 : hPercent;
+            hPercent = (hPercent > 1) ? 1 : hPercent;
 
-            mapScrollPane.setVvalue(vPercet);
-            mapScrollPane.setHvalue(hPecent);
+            mapScrollPane.setVvalue(vPercent);
+            mapScrollPane.setHvalue(hPercent);
         }
     }
 

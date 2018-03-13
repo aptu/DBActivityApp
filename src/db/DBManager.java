@@ -25,6 +25,8 @@ public class DBManager {
     private List<String> userInterests = new ArrayList<String>();
     private List<String> allInterests = new ArrayList<String>();
 
+    static Random rando = new Random();
+
 
     public DBManager() {
 
@@ -50,9 +52,11 @@ public class DBManager {
 
     // 1 When login button is pressed, we check if user exists and setup the userID
     public Boolean login(String userName) throws SQLException {
-        Random rando = new Random();
+
         ControllerHolder.UserLocationX = rando.nextInt(600) + 100;
         ControllerHolder.UserLocationY = rando.nextInt(500) + 40;
+        System.out.println(ControllerHolder.UserLocationX);
+        System.out.println(ControllerHolder.UserLocationY);
 
         PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.User" +
                 " where UserName = ?");
@@ -85,7 +89,7 @@ public class DBManager {
         return allInterests;
     }
 
-    public List<LocatableActivityItem> findAllActivities() throws  SQLException {
+    public List<LocatableActivityItem> findAllActivities(int distanceMax) throws  SQLException {
 
         List<LocatableActivityItem> activities = new ArrayList<LocatableActivityItem>();
         PreparedStatement statement = connection.prepareStatement("select l.LocationID, l.LocName, a.Type, l.Latitude, l.Longitude" +
@@ -101,7 +105,11 @@ public class DBManager {
             activity = result.getString("Type");
             latitude = result.getInt("Latitude");
             longitude = result.getInt("Longitude");
-            activities.add(new LocatableActivityItem(id, name, activity, null, null, latitude, longitude));
+
+            double userDistance = Math.sqrt(Math.pow(ControllerHolder.UserLocationX - longitude, 2) + Math.pow(ControllerHolder.UserLocationY - latitude, 2));
+
+            if(userDistance <= distanceMax)
+                activities.add(new LocatableActivityItem(id, name, activity, null, null, latitude, longitude));
         }
 
         return activities;
@@ -109,7 +117,7 @@ public class DBManager {
 
     // Select activity by ID
     // Returns the name of activity
-    public List<LocatableActivityItem> findActivity(String activityType) throws SQLException {
+    public List<LocatableActivityItem> findActivity(String activityType, int distanceMax) throws SQLException {
         List<LocatableActivityItem> activities = new ArrayList<LocatableActivityItem>();
         PreparedStatement statement = connection.prepareStatement("select l.LocName, a.Type, l.Latitude, l.Longitude" +
                 " from ActivityApp.LocatableActivity l, ActivityApp.Activity a where l.ActivityID = ? and l.ActivityID = a.ActivityID");
@@ -124,7 +132,11 @@ public class DBManager {
             activity = result.getString("Type");
             latitude = result.getInt("Latitude");
             longitude = result.getInt("Longitude");
-            activities.add(new LocatableActivityItem(name, activity, null, null, latitude, longitude));
+
+            double userDistance = Math.sqrt(Math.pow(ControllerHolder.UserLocationX - longitude, 2) + Math.pow(ControllerHolder.UserLocationY - latitude, 2));
+
+            if(userDistance <= distanceMax)
+                activities.add(new LocatableActivityItem(name, activity, null, null, latitude, longitude));
         }
 
         return activities;
