@@ -2,3 +2,4 @@ out/*
 .idea/*
 .idea/libraries/*
 *.iml
+src/META-INF/*
