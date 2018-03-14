@@ -2,6 +2,7 @@ package controllers;
 
 import db.DBManager;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
 import scene.SceneHolder;
 
 import javax.naming.ldap.Control;
@@ -24,7 +25,6 @@ public class MainMenuController {
     }
 
     public void goToProfile(ActionEvent actionEvent) throws SQLException {
-
         //load the user preferences before we switch to this scene
         ControllerHolder.profileController.loadUserPreferences();
 
@@ -36,9 +36,13 @@ public class MainMenuController {
         SceneHolder.primaryStage.setScene(SceneHolder.historyScene);
     }
 
+    public void goToStats(ActionEvent actionEvent) {
+        ControllerHolder.statisticsController.loadStats();
+        SceneHolder.primaryStage.setScene(SceneHolder.statsScene);
+    }
+
 
     public void logOut(ActionEvent actionEvent) throws SQLException {
-
         DBManager.db.logout();
         SceneHolder.primaryStage.setScene(SceneHolder.loginScene);
     }

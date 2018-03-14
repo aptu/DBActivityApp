@@ -39,7 +39,7 @@
             <Button mnemonicParsing="false" onAction="#goToProfile" prefHeight="44.0" prefWidth="123.0" text="Profile" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Button mnemonicParsing="false" onAction="#goToHistory" prefHeight="44.0" prefWidth="123.0" text="History" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Button mnemonicParsing="false" onAction="#logOut" prefHeight="44.0" prefWidth="123.0" text="Log Out" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-            <Button mnemonicParsing="false" onAction="#goToHistory" prefHeight="44.0" prefWidth="123.0" text="My Stats" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Button mnemonicParsing="false" onAction="#goToStats" prefHeight="44.0" prefWidth="123.0" text="My Stats" GridPane.columnIndex="1" GridPane.rowIndex="5" />
          </children>
       </GridPane>
    </children>

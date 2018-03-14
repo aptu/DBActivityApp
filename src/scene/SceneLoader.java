@@ -54,5 +54,10 @@ public class SceneLoader {
         Parent createEventSceneLayout = loader.load();
         SceneHolder.createEventScene = new Scene(createEventSceneLayout, 402, 786);
         ControllerHolder.createEventController = loader.getController();
+
+        loader = new FXMLLoader(mainClass.getResource("scene_layouts/statistics_scene_layout.fxml"));
+        Parent statsSceneLayout = loader.load();
+        SceneHolder.statsScene = new Scene(statsSceneLayout, 402, 786);
+        ControllerHolder.statisticsController = loader.getController();
     }
 }
