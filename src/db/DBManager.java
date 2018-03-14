@@ -21,6 +21,7 @@ public class DBManager {
     public Connection connection = null;
     private Map<Integer, Activity> listOfActivities = new HashMap<Integer, Activity>();
     private Map<String, Integer> activityIDMap = new HashMap<String, Integer>();
+    private Map<Integer, String> activityTypeMap = new HashMap<>();
     private Map<Integer, Event> listOfEvents = new HashMap<Integer, Event>();
     private List<String> userInterests = new ArrayList<String>();
     private List<String> allInterests = new ArrayList<String>();
@@ -46,6 +47,7 @@ public class DBManager {
                 id = result.getInt("ActivityID");
                 allInterests.add(name);
                 activityIDMap.put(name, id);
+                activityTypeMap.put(id, name);
             }
         }
     }
@@ -267,29 +269,56 @@ public class DBManager {
 
 
     // Query the list of all activities and save in current session
-    //TODO: should I return the list??
-    public void getListOfEvents() throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select * from ActivityApp.Event");
+    public List<Event> findAllEvents(int distanceMax, boolean happeningNow, LocalDate start, LocalDate end) throws SQLException {
+        List<Event> eventList = new ArrayList<>();
+
+        PreparedStatement statement;
+        if(happeningNow) {
+            statement = connection.prepareStatement("select e.EventID, e.ActivityID, a.Type, e.StartTime, e.EndTime, " +
+                    "e.EventName, e.Latitude, e.Longitude from ActivityApp.Event e, ActivityApp.Activity a" +
+                    " where e.ActivityID = a.ActivityID and e.EventID not in (select EventID from ActivityApp.UserAttendingEvent where UserID = ?) " +
+                    "and StartTime <= now() and EndTime >= now();");
+            statement.setInt(1, currUserId);
+        }
+        else {
+            statement = connection.prepareStatement("select e.EventID, e.ActivityID, a.Type, e.StartTime, e.EndTime, " +
+                    "e.EventName, e.Latitude, e.Longitude from ActivityApp.Event e, ActivityApp.Activity a" +
+                    " where e.ActivityID = a.ActivityID and e.EventID not in (select EventID from ActivityApp.UserAttendingEvent where UserID = ?) " +
+                    "and StartTime >= date(?) and EndTime <= date(?)");
+            statement.setInt(1, currUserId);
+            statement.setString(2, start.toString());
+            statement.setString(3, end.toString());
+        }
+
         ResultSet result = statement.executeQuery();
         int id, aid;
-        java.sql.Timestamp startTime, endTime; //TODO: format date????
+        String activityName;
+        LocalDateTime startTime, endTime; //TODO: format date?
         String name;
         double latitude, longitude;
         while (result.next()){
             id = result.getInt("EventID");
             aid = result.getInt("ActivityID");
-            startTime = result.getTimestamp("StartTime");
-            endTime = result.getTimestamp("EndTime");
+            activityName = result.getString("Type");
+            startTime = result.getTimestamp("StartTime").toLocalDateTime();
+            endTime = result.getTimestamp("EndTime").toLocalDateTime();
             name = result.getString("EventName");
             latitude = result.getDouble("Latitude");
-            longitude = result.getDouble("LOngitude");
-            Event event = new Event(id,aid, startTime.toLocalDateTime(),endTime.toLocalDateTime(), name, latitude, longitude);
-            this.listOfEvents.put(id, event);
+            longitude = result.getDouble("Longitude");
+
+
+            double userDistance = Math.sqrt(Math.pow(ControllerHolder.UserLocationX - longitude, 2) + Math.pow(ControllerHolder.UserLocationY - latitude, 2));
+
+            if(userDistance <= distanceMax)
+                eventList.add(new Event(id, aid, activityName, startTime,endTime, name, latitude, longitude));
+
+
         }
-        // check if it worked
-        for (int e : listOfEvents.keySet()){
-            System.out.println(e + "\t " + listOfEvents.get(e).toString());
-        }
+        return eventList;
+    }
+
+    public List<Event> findEvents( String activity, int distance, boolean happeningNow, LocalDate start, LocalDate end) throws SQLException {
+        return null;
     }
 
     // Set currActivity & update it
@@ -322,6 +351,7 @@ public class DBManager {
         while(result.next()) {
             int eventId = result.getInt("EventID");
             int activityId = result.getInt("ActivityID");
+            String activityName = activityTypeMap.get(activityId);
             String eventName = result.getString("EventName");
             double latitude = result.getDouble("Latitude");
             double longitude = result.getDouble("Longitude");
@@ -336,7 +366,7 @@ public class DBManager {
             LocalTime localEndTime = endTime.toLocalTime();
             LocalDate localEndDate = endDate.toLocalDate();
 
-            Event e = new Event(eventId, activityId, LocalDateTime.of(localStartDate, localStartTime), LocalDateTime.of(localEndDate, localEndTime), eventName, latitude, longitude);
+            Event e = new Event(eventId, activityId, activityName, LocalDateTime.of(localStartDate, localStartTime), LocalDateTime.of(localEndDate, localEndTime), eventName, latitude, longitude);
             userEvents.add(e);
         }
 
@@ -575,7 +605,7 @@ public class DBManager {
 
         // Test getListof Activities and getListOfEvents
         dbm.getListOfActivities();
-        dbm.getListOfEvents();
+        //dbm.getListOfEvents();
 
         // Save activity to history
             /*dbm.saveActivitytoHistory(new ActivityHistory(1039, 2, 101,
