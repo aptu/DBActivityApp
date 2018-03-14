@@ -3,6 +3,8 @@ package controllers;
 import javafx.event.ActionEvent;
 import scene.SceneHolder;
 
+import java.sql.SQLException;
+
 public class EventController {
     public void goToFindEvent(ActionEvent actionEvent) {
         ControllerHolder.findEventController.loadSettings();
@@ -13,7 +15,7 @@ public class EventController {
         SceneHolder.primaryStage.setScene(SceneHolder.mainMenuScene);
     }
 
-    public void goToMyEvents(ActionEvent actionEvent) {
+    public void goToMyEvents(ActionEvent actionEvent) throws SQLException {
         ControllerHolder.myEventsController.loadEvents();
         SceneHolder.primaryStage.setScene(SceneHolder.myEventsScene);
     }

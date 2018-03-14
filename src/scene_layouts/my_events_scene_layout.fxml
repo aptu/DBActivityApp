@@ -23,17 +23,27 @@
             <Image url="@PhoneBackground.png" />
          </image>
       </ImageView>
-      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" prefHeight="275.0" prefWidth="336.0">
+      <ScrollPane fx:id="mapScrollPane" layoutX="32.0" layoutY="89.0" pannable="true" prefHeight="275.0" prefWidth="336.0">
          <content>
-            <ImageView fx:id="mapView" fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Map.png" />
-               </image>
-            </ImageView>
+            <Pane prefHeight="580.0" prefWidth="800.0">
+               <children>
+                  <ImageView fx:id="mapView" fitHeight="580.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Map.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="eventLocationMarker" fitHeight="20.0" fitWidth="20.0" layoutX="23.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ActivityLocation.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
          </content>
       </ScrollPane>
-      <ListView fx:id="eventList" layoutX="45.0" layoutY="376.0" prefHeight="146.0" prefWidth="311.0" />
+      <ListView fx:id="eventList" layoutX="45.0" layoutY="376.0" onMouseClicked="#getSelected" prefHeight="146.0" prefWidth="311.0" />
       <Button fx:id="backButton" layoutX="245.0" layoutY="626.0" mnemonicParsing="false" onAction="#goToMenu" prefHeight="44.0" prefWidth="123.0" text="Back" />
       <Button fx:id="cancelButton" layoutX="45.0" layoutY="626.0" mnemonicParsing="false" onAction="#cancelEvent" prefHeight="44.0" prefWidth="123.0" text="Cancel" />
+      <Label fx:id="eventInfo" layoutX="45.0" layoutY="543.0" />
    </children>
 </Pane>

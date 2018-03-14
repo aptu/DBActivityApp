@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public class Event {
     private int eventId;
     private  int activityId;
+    private String activityName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String eventName;
@@ -23,14 +24,23 @@ public class Event {
     }
 
 
-    public Event(int eventId, int activityId, LocalDateTime startTime, LocalDateTime endTime, String eventName, double latitude, double longitude){
-        this( activityId, startTime, endTime, eventName, latitude, longitude);
+    public Event(int eventId,int activityId, String activity, LocalDateTime startTime, LocalDateTime endTime, String eventName, double latitude, double longitude){
         this.eventId = eventId;
+        this.activityId = activityId;
+        this.activityName = activity;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.eventName = eventName;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
-
 
     public int getEventId() {
         return eventId;
+    }
+
+    public String getActivityName() {
+        return activityName;
     }
 
     public void setEventId(int eventId) {
@@ -55,8 +65,7 @@ public class Event {
     }
 
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Event{" +
                 "eventId=" + eventId +
                 ", activityId=" + activityId +
