@@ -192,8 +192,8 @@ public class FindActivityController {
             longitude = result.getInt("Longitute");
 
             ImageView waypoint = new ImageView(waypointMarkerImage);
-            waypoint.setY(latitude);
-            waypoint.setX(longitude);
+            waypoint.setY(longitude);
+            waypoint.setX(latitude);
             scrollCanvas.getChildren().add(waypoint);
         }
 
